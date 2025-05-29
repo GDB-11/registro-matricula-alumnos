@@ -2,11 +2,17 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.cibertec.alumnos</groupId>
-  <artifactId>my-java-project</artifactId>
+  <artifactId>registro-matricula-alumnos</artifactId>
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>my-java-project</name>
+  <name>registro-matricula-alumnos</name>
   <url>http://maven.apache.org</url>
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <exec.mainClass>main.Program</exec.mainClass>
+    </properties>
   <dependencies>
   	<!-- FlatLaf - Modern Look and Feel -->
     <dependency>
