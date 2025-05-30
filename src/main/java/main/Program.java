@@ -17,8 +17,19 @@ public class Program {
     }
 
     private static void configureServices(ServiceContainer container) {
-        //Servicios
+        //Lógica de inicialización de base de datos
+        DatabaseManager databaseManager = new DatabaseManager();
+        DatabaseInitializer databaseInitializer = new DatabaseInitializer(databaseManager);
+
+        databaseInitializer.initializeTables();
+        container.addInstance(DatabaseInitializer.class, databaseInitializer);
+
+        container.addInstance(DatabaseManager.class, databaseManager);
+
+        //Repositorios
         container.addSingleton(IAlumnoRepository.class, AlumnoRepository.class);
+
+        //Servicios
 
         //Ventanas
         container.addInstance(WindowFactory.class, new WindowFactory(container));
