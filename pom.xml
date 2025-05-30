@@ -31,8 +31,8 @@
   <name>registro-matricula-alumnos</name>
   <url>http://maven.apache.org</url>
     <properties>
-        <maven.compiler.source>15</maven.compiler.source>
-        <maven.compiler.target>15</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <exec.mainClass>main.Program</exec.mainClass>
     </properties>

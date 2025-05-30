@@ -11,14 +11,14 @@ public class DatabaseInitializer {
     }
 
     public void initializeTables() {
-        System.out.println("Inicializando tablas en la base de datos...");
+        System.out.println("Initializing database tables...");
 
         createAlumnoTable();
         createCursoTable();
         createMatriculaTable();
         createRetiroTable();
 
-        System.out.println("Inicialización completada");
+        System.out.println("Database initialization completed!");
     }
 
     private void createAlumnoTable() {
@@ -88,10 +88,10 @@ public class DatabaseInitializer {
     private void executeCreateTable(String sql, String tableName) {
         try (Statement stmt = databaseManager.getConnection().createStatement()) {
             stmt.execute(sql);
-            System.out.println("✓ Tabla '" + tableName + "' creada/verificada con éxito");
+            System.out.println("✓ Table '" + tableName + "' created/verified successfully");
         } catch (SQLException e) {
-            System.err.println("Error creando tabla " + tableName + ": " + e.getMessage());
-            throw new RuntimeException("Error creando tabla " + tableName, e);
+            System.err.println("Error creating table " + tableName + ": " + e.getMessage());
+            throw new RuntimeException("Failed to create table " + tableName, e);
         }
     }
 }

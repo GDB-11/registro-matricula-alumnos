@@ -20,12 +20,12 @@ public class DatabaseManager {
         try {
             connection = DriverManager.getConnection(DB_URL);
 
-            System.out.println("¡Conectado satisfactoriamente a la base de datos SQLite!");
-            System.out.println("Ubicación: " + System.getProperty("user.dir") + "/" + DB_NAME);
+            System.out.println("SQLite database connected successfully!");
+            System.out.println("Database location: " + System.getProperty("user.dir") + "/" + DB_NAME);
 
         } catch (SQLException e) {
-            System.err.println("Error al conectar a la base de datos: " + e.getMessage());
-            throw new RuntimeException("No se pudo inicializar la base de datos: ", e);
+            System.err.println("Error connecting to database: " + e.getMessage());
+            throw new RuntimeException("Failed to initialize database", e);
         }
     }
 
@@ -36,8 +36,8 @@ public class DatabaseManager {
             }
             return connection;
         } catch (SQLException e) {
-            System.err.println("Error obteniendo la conexión a la base de datos: " + e.getMessage());
-            throw new RuntimeException("Error obteniendo la conexión a la base de datos", e);
+            System.err.println("Error getting database connection: " + e.getMessage());
+            throw new RuntimeException("Failed to get database connection", e);
         }
     }
 
@@ -45,10 +45,10 @@ public class DatabaseManager {
         try {
             if (connection != null && !connection.isClosed()) {
                 connection.close();
-                System.out.println("Conexión a la base de datos terminada.");
+                System.out.println("Database connection closed.");
             }
         } catch (SQLException e) {
-            System.err.println("Error cerrando la conexión a la base de datos: " + e.getMessage());
+            System.err.println("Error closing database connection: " + e.getMessage());
         }
     }
 
