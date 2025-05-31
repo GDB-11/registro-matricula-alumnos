@@ -29,8 +29,8 @@ public class DatabaseInitializer {
                 apellidos TEXT NOT NULL,
                 dni TEXT NOT NULL UNIQUE,
                 edad INTEGER NOT NULL,
-                celular TEXT NOT NULL,
-                estado INTEGER NOT NULL DEFAULT 1,
+                celular INTEGER NOT NULL,
+                estado INTEGER NOT NULL DEFAULT 0,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )
             """;
