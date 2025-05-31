@@ -1,22 +1,17 @@
 package presentation;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import main.WindowFactory;
 import presentation.mantenimiento.AlumnoWindow;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
+
+import java.io.Serial;
 
 public class MainWindow extends JFrame {
+    @Serial
     private static final long serialVersionUID = 1L;
     private final WindowFactory windowFactory;
 
-    /**
-     * Create the frame with dependency injection
-     * The WindowFactory is injected so we can create other windows with their dependencies
-     */
     public MainWindow(WindowFactory windowFactory) {
         this.windowFactory = windowFactory;
         initializeComponents();
@@ -28,7 +23,7 @@ public class MainWindow extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 750, 375);
         
-        // Create menu bar
+        // Crear menu bar
         JMenuBar menuBar_mainWindow = new JMenuBar();
         setJMenuBar(menuBar_mainWindow);
         
@@ -81,66 +76,31 @@ public class MainWindow extends JFrame {
         setContentPane(contentPane);
         contentPane.setLayout(null);
         
-        // Wire up event handlers - this is where the magic happens!
+        // Agregar eventos click para abrir ventanas secundarias
         mntm_alumno.addActionListener(e -> openAlumnoWindow());
-        
-        // Add more event handlers for other menu items as you create them
-        // mntm_curso.addActionListener(e -> openCursoWindow());
-        // mntm_matricula.addActionListener(e -> openMatriculaWindow());
     }
-    
-    /**
-     * Open the Alumno window with all dependencies automatically injected
-     */
+
     private void openAlumnoWindow() {
         try {
-            // Use the window factory to create the Alumno window with dependency injection
-            // This will automatically inject IAlumno service into the Alumno window constructor
             AlumnoWindow alumnoWindow = windowFactory.createAlumnoWindow();
             alumnoWindow.setVisible(true);
             
-            System.out.println("Alumno window opened successfully");
+            System.out.println("AlumnoWindow abierto");
         } catch (Exception e) {
-            handleWindowError("Alumno", e);
+            handleWindowError("AlumnoWindow", e);
         }
     }
 
-    // Example methods for other windows you'll create later
-    /*
-    private void openCursoWindow() {
-        try {
-            Curso cursoWindow = windowFactory.createWindow(Curso.class);
-            cursoWindow.setVisible(true);
-            System.out.println("Curso window opened successfully");
-        } catch (Exception e) {
-            handleWindowError("Curso", e);
-        }
-    }
-
-    private void openMatriculaWindow() {
-        try {
-            Matricula matriculaWindow = windowFactory.createWindow(Matricula.class);
-            matriculaWindow.setVisible(true);
-            System.out.println("Matricula window opened successfully");
-        } catch (Exception e) {
-            handleWindowError("Matricula", e);
-        }
-    }
-    */
-
-    /**
-     * Handle errors when opening windows
-     */
     private void handleWindowError(String windowName, Exception e) {
-        System.err.println("Error opening " + windowName + " window: " + e.getMessage());
+        System.err.println("Error abriendo " + windowName + e.getMessage());
         e.printStackTrace();
         
         // Show user-friendly error dialog
-        javax.swing.JOptionPane.showMessageDialog(
+        JOptionPane.showMessageDialog(
             this, 
             "Error al abrir la ventana de " + windowName + ":\n" + e.getMessage(),
             "Error", 
-            javax.swing.JOptionPane.ERROR_MESSAGE
+            JOptionPane.ERROR_MESSAGE
         );
     }
 }
