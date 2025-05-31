@@ -17,4 +17,10 @@ public class AlumnoService implements IAlumno {
 	public Result<List<Alumno>> getAllAlumnos() {
 		return _alumnoRepository.getAllAlumnos();
 	}
+
+	public Result<Alumno> saveAlumno(String nombres, String apellidos, String dni, int edad, int celular) {
+		Alumno alumno = new Alumno(nombres, apellidos, dni, edad, celular, 0);
+
+		return _alumnoRepository.saveAlumno(alumno);
+	}
 }
