@@ -23,4 +23,8 @@ public class AlumnoService implements IAlumno {
 
 		return _alumnoRepository.saveAlumno(alumno);
 	}
+
+	public Result<Boolean> dniExists(String dni) {
+		return _alumnoRepository.dniExists(dni);
+	}
 }

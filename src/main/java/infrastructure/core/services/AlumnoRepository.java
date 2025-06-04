@@ -79,4 +79,22 @@ public class AlumnoRepository implements IAlumnoRepository {
     		return Result.error("Excepción al insertar el alumno", e);
     	}
     }
+
+	public Result<Boolean> dniExists(String dni) {
+		String sql = "SELECT COUNT(*) FROM alumno WHERE dni = ?";
+
+		try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql)) {
+			stmt.setString(1, dni);
+
+			try (ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
+					int count = rs.getInt(1);
+					return Result.success(count > 0);
+				}
+				return Result.success(false);
+			}
+		} catch (SQLException e) {
+			return Result.error("Error verificando existencia de DNI: " + dni, e);
+		}
+	}
 }

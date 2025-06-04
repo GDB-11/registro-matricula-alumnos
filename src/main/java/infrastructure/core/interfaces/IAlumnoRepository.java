@@ -8,4 +8,5 @@ import infrastructure.core.models.Alumno;
 public interface IAlumnoRepository {
 	Result<List<Alumno>> getAllAlumnos();
 	Result<Alumno> saveAlumno(Alumno alumno);
+	Result<Boolean> dniExists(String dni);
 }

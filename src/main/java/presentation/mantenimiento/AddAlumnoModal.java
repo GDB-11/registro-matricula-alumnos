@@ -132,16 +132,22 @@ public class AddAlumnoModal extends JDialog {
 		celularPanel.add(createHintLabel(" (9 dígitos)"));
 		mainPanel.add(celularPanel, gbc);
 
-		gbc.gridx = 0; gbc.gridy = 6;
-		gbc.gridwidth = 2;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		mainPanel.add(lblErrorMessage, gbc);
+		// Create a separate error message container with fixed height
+		JPanel errorContainer = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		errorContainer.setPreferredSize(new Dimension(0, 30)); // Fixed height of 30 pixels
+		errorContainer.setBorder(new EmptyBorder(5, 10, 5, 10));
+		errorContainer.add(lblErrorMessage);
+
+		// Create a wrapper panel to hold both main panel and error container
+		JPanel contentWrapper = new JPanel(new BorderLayout());
+		contentWrapper.add(mainPanel, BorderLayout.CENTER);
+		contentWrapper.add(errorContainer, BorderLayout.SOUTH);
 
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 15));
 		buttonPanel.add(btnSave);
 		buttonPanel.add(btnCancel);
 
-		add(mainPanel, BorderLayout.CENTER);
+		add(contentWrapper, BorderLayout.CENTER);
 		add(buttonPanel, BorderLayout.SOUTH);
 	}
 
@@ -293,6 +299,18 @@ public class AddAlumnoModal extends JDialog {
 		String dni = txtDni.getText().trim();
 		if (dni.length() != 8) {
 			showErrorMessage("El DNI debe tener exactamente 8 dígitos");
+			txtDni.requestFocus();
+			return false;
+		}
+
+		Result<Boolean> dniExists = _alumnoService.dniExists(dni);
+		if (dniExists.isError()) {
+			showErrorMessage(dniExists.getError());
+			txtDni.requestFocus();
+			return false;
+		}
+		if (dniExists.getValue()) {
+			showErrorMessage("El DNI ya ha sido registrado");
 			txtDni.requestFocus();
 			return false;
 		}

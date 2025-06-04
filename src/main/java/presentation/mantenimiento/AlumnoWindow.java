@@ -26,9 +26,6 @@ public class AlumnoWindow extends JFrame {
 	private JButton btnAdd;
 	private JButton btnRefresh;
 
-	/**
-	 * Create the frame.
-	 */
 	public AlumnoWindow(IAlumno alumnoService) {
 		_alumnoService = alumnoService;
 
@@ -248,7 +245,7 @@ public class AlumnoWindow extends JFrame {
 
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
-			if (columnIndex >= 7) return ""; // Button columns
+			if (columnIndex >= 7) return ""; // Columnas de botones
 
 			Alumno alumno = alumnos.get(rowIndex);
 			return switch (columnIndex) {
