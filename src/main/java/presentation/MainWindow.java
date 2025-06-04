@@ -3,6 +3,7 @@ package presentation;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import main.WindowFactory;
+import presentation.helper.WindowHelper;
 import presentation.mantenimiento.AlumnoWindow;
 
 import java.io.Serial;
@@ -21,7 +22,8 @@ public class MainWindow extends JFrame {
         setResizable(false);
         setTitle("Nuestra empresa");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 750, 375);
+        setBounds(100, 100, 1500, 750);
+        WindowHelper.centerWindow(this);
         
         // Crear menu bar
         JMenuBar menuBar_mainWindow = new JMenuBar();

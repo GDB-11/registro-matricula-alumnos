@@ -8,8 +8,7 @@ import infrastructure.core.services.AlumnoRepository;
 import presentation.MainWindow;
 
 /**
- * Main entry point for the application
- * Similar to C#'s Program.cs with dependency injection setup
+ * Orquestador de toda la aplicación
  */
 public class Program {
     private static ServiceContainer container;
@@ -17,66 +16,62 @@ public class Program {
 
     public static void main(String[] args) {
         try {
-            System.out.println("Starting application...");
+            System.out.println("Iniciando aplicación...");
             
             // Inicializar el contenedor de inyección de dependencia (Dependency Injection Container)
             container = new ServiceContainer();
             configureServices(container);
             
-            // Create window factory
+            // Crear window factory
             windowFactory = new WindowFactory(container);
             
-            // Run the application
+            // Correr aplicación
             runApplication();
         } catch (Exception e) {
-            System.err.println("Error starting application: " + e.getMessage());
+            System.err.println("Error iniciando aplicación: " + e.getMessage());
             e.printStackTrace();
             System.exit(1);
         }
     }
 
     /**
-     * Configure all services - similar to C#'s ConfigureServices method
+     * Configurar todos los servicios
      */
     private static void configureServices(ServiceContainer container) {
         try {
-            System.out.println("Configuring services...");
+            System.out.println("Configurando servicios...");
             
-            // Database initialization logic
+            // Lógica de inicialización de la base de datos
             DatabaseManager databaseManager = new DatabaseManager();
             DatabaseInitializer databaseInitializer = new DatabaseInitializer(databaseManager);
             databaseInitializer.initializeTables();
             
-            // Register database instances (already created objects)
+            // Registrar instancias de base de datos
             container.addInstance(DatabaseManager.class, databaseManager);
             container.addInstance(DatabaseInitializer.class, databaseInitializer);
 
-            // Register repositories as singletons (interface -> implementation)
+            // Registrar repositorios
             container.addSingleton(IAlumnoRepository.class, AlumnoRepository.class);
 
-            // Register services as singletons (interface -> implementation)
+            // Registrar servicios
             container.addSingleton(IAlumno.class, AlumnoService.class);
 
-            // Optional: Add more services here as you create them
-            // container.addSingleton(ICursoRepository.class, CursoRepository.class);
-            // container.addSingleton(ICurso.class, CursoService.class);
-
-            // Debug: Print registered services
+            // Debug: Imprimir servicios registrados
             container.printRegisteredServices();
             
-            System.out.println("Services configured successfully");
+            System.out.println("Servicios configurados correctamente");
         } catch (Exception e) {
-            throw new RuntimeException("Failed to configure services", e);
+            throw new RuntimeException("No se pudieron configurar los servicios", e);
         }
     }
 
     /**
-     * Run the Swing application
+     * Correr aplicación Java Swing
      */
     private static void runApplication() {
         javax.swing.SwingUtilities.invokeLater(() -> {
             try {
-                System.out.println("Setting up UI...");
+                System.out.println("Configurando la interfaz de usuario...");
                 
                 // Setup look and feel
                 FlatDarkLaf.setup();
@@ -85,24 +80,23 @@ public class Program {
                 MainWindow mainWindow = windowFactory.createMainWindow();
                 mainWindow.setVisible(true);
                 
-                System.out.println("Application started successfully");
+                System.out.println("La aplicación se inició correctamente");
             } catch (Exception e) {
-                System.err.println("Error running application: " + e.getMessage());
+                System.err.println("Error al ejecutar la aplicación: " + e.getMessage());
                 e.printStackTrace();
             }
         });
     }
 
     /**
-     * Get the service container (for accessing from other parts of the application if needed)
-     * Similar to accessing IServiceProvider in C#
+     * Obtener el contenedor de servicio
      */
     public static ServiceContainer getContainer() {
         return container;
     }
 
     /**
-     * Get the window factory (for accessing from other parts of the application if needed)
+     * Obtener window factory
      */
     public static WindowFactory getWindowFactory() {
         return windowFactory;
