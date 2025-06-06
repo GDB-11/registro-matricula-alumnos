@@ -97,4 +97,37 @@ public class AlumnoRepository implements IAlumnoRepository {
 			return Result.error("Error verificando existencia de DNI: " + dni, e);
 		}
 	}
+
+	/*public Result<Alumno> editAlumno(Alumno alumno) {
+		String sql = """
+                UPDATE alumno
+                SET nombres = ?, apellidos = ?, edad = ?,  celular = ?, estado = ?
+                WHERE cod_alumno = ?
+                """;
+
+		try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+			stmt.setString(1, alumno.getNombres());
+			stmt.setString(2, alumno.getApellidos());
+			stmt.setInt(3, alumno.getEdad());
+			stmt.setString(4, String.valueOf(alumno.getCelular()));
+			stmt.setInt(5, alumno.getEstado());
+			stmt.setInt(6, alumno.getCodAlumno());
+
+			int affectedRows = stmt.executeUpdate();
+
+			if (affectedRows > 0) {
+				try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+					if (generatedKeys.next()) {
+						alumno.setCodAlumno(generatedKeys.getInt(1));
+						return Result.success(alumno);
+					}
+				}
+			}
+
+			return Result.error("No se pudo insertar el alumno");
+
+		} catch (SQLException e) {
+			return Result.error("Excepción al insertar el alumno", e);
+		}
+	}*/
 }
