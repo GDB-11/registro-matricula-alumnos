@@ -29,4 +29,12 @@ public class CursoService implements ICurso {
 
         return _cursoRepository.editCurso(curso);
     }
+
+    public Result<Void> deleteCurso(int codigo) {
+        return _cursoRepository.deleteCurso(codigo);
+    }
+
+    public Result<Boolean> codigoExists(int codigo) {
+        return _cursoRepository.codigoExists(codigo);
+    }
 }
