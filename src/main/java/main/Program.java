@@ -2,9 +2,13 @@ package main;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import application.core.interfaces.IAlumno;
+import application.core.interfaces.ICurso;
 import application.core.services.AlumnoService;
+import application.core.services.CursoService;
 import infrastructure.core.interfaces.IAlumnoRepository;
+import infrastructure.core.interfaces.ICursoRepository;
 import infrastructure.core.services.AlumnoRepository;
+import infrastructure.core.services.CursoRepository;
 import presentation.MainWindow;
 
 /**
@@ -52,9 +56,11 @@ public class Program {
 
             // Registrar repositorios
             container.addSingleton(IAlumnoRepository.class, AlumnoRepository.class);
+            container.addSingleton(ICursoRepository.class, CursoRepository.class);
 
             // Registrar servicios
             container.addSingleton(IAlumno.class, AlumnoService.class);
+            container.addSingleton(ICurso.class, CursoService.class);
 
             // Debug: Imprimir servicios registrados
             container.printRegisteredServices();
