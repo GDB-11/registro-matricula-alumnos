@@ -1,10 +1,25 @@
 package presentation.mantenimiento;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.Serial;
-import javax.swing.*;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
@@ -20,26 +35,27 @@ import presentation.helper.LabelHelper;
 import presentation.helper.TextFieldHelper;
 import presentation.helper.ValidationHelper;
 
-public class AddAlumnoModal extends JDialog {
-	@Serial
+public class EditAlumnoModal extends JDialog {
+    @Serial
 	private static final long serialVersionUID = 1L;
 
 	private final IAlumno _alumnoService;
 	private JTextField txtNombres;
 	private JTextField txtApellidos;
-	private JTextField txtDni;
 	private JTextField txtEdad;
 	private JTextField txtCelular;
+    private JComboBox cmbEstado;
 	private JButton btnSave;
 	private JButton btnCancel;
 	private JLabel lblErrorMessage;
 
-	private boolean dialogResult = false;
-	private Alumno createdAlumno = null;
+    private boolean dialogResult = false;
+	private Alumno selectedAlumno = null;
 
-	public AddAlumnoModal(Frame parent, IAlumno alumnoService) {
+    public EditAlumnoModal(Frame parent, IAlumno alumnoService, Alumno selectedAlumno) {
 		super(parent, "Agregar Nuevo Alumno", true);
 		this._alumnoService = alumnoService;
+        this.selectedAlumno = selectedAlumno;
 
 		initializeComponents();
 		setupLayout();
@@ -52,18 +68,17 @@ public class AddAlumnoModal extends JDialog {
 		setLocationRelativeTo(parent);
 	}
 
-	private void initializeComponents() {
+    private void initializeComponents() {
 		txtNombres = new JTextField(20);
 		txtApellidos = new JTextField(20);
-		txtDni = new JTextField(8);
 		txtEdad = new JTextField(3);
 		txtCelular = new JTextField(9);
+        cmbEstado = new JComboBox<>(new String[]{"Registrado", "Matriculado", "Retirado"});
 
-		TextFieldHelper.styleTextField(txtNombres);
-		TextFieldHelper.styleTextField(txtApellidos);
-		TextFieldHelper.styleTextField(txtDni);
-		TextFieldHelper.styleTextField(txtEdad);
-		TextFieldHelper.styleTextField(txtCelular);
+		TextFieldHelper.styleTextField(txtNombres, selectedAlumno.getNombres());
+		TextFieldHelper.styleTextField(txtApellidos, selectedAlumno.getApellidos());
+		TextFieldHelper.styleTextField(txtEdad, String.valueOf(selectedAlumno.getEdad()));
+		TextFieldHelper.styleTextField(txtCelular, String.valueOf(selectedAlumno.getCelular()));
 
 		btnSave = new JButton("Guardar");
 		btnCancel = new JButton("Cancelar");
@@ -77,7 +92,7 @@ public class AddAlumnoModal extends JDialog {
 		lblErrorMessage.setHorizontalAlignment(SwingConstants.CENTER);
 	}
 
-	private void setupLayout() {
+    private void setupLayout() {
 		setLayout(new BorderLayout());
 
 		JPanel mainPanel = new JPanel(new GridBagLayout());
@@ -89,7 +104,7 @@ public class AddAlumnoModal extends JDialog {
 
 		JLabel titleLabel = new JLabel("Datos del Alumno");
 		titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
-		//titleLabel.setForeground(new Color(52, 73, 94));
+        
 		gbc.gridx = 0; gbc.gridy = 0;
 		gbc.gridwidth = 2;
 		gbc.anchor = GridBagConstraints.CENTER;
@@ -109,14 +124,6 @@ public class AddAlumnoModal extends JDialog {
 		mainPanel.add(txtApellidos, gbc);
 
 		gbc.gridx = 0; gbc.gridy = 3;
-		mainPanel.add(LabelHelper.createLabel("DNI:", true), gbc);
-		gbc.gridx = 1;
-		JPanel dniPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-		dniPanel.add(txtDni);
-		dniPanel.add(LabelHelper.createHintLabel(" (8 dígitos)"));
-		mainPanel.add(dniPanel, gbc);
-
-		gbc.gridx = 0; gbc.gridy = 4;
 		mainPanel.add(LabelHelper.createLabel("Edad:", true), gbc);
 		gbc.gridx = 1;
 		JPanel edadPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -124,7 +131,7 @@ public class AddAlumnoModal extends JDialog {
 		edadPanel.add(LabelHelper.createHintLabel(" (años)"));
 		mainPanel.add(edadPanel, gbc);
 
-		gbc.gridx = 0; gbc.gridy = 5;
+		gbc.gridx = 0; gbc.gridy = 4;
 		mainPanel.add(LabelHelper.createLabel("Celular:", true), gbc);
 		gbc.gridx = 1;
 		JPanel celularPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -132,13 +139,18 @@ public class AddAlumnoModal extends JDialog {
 		celularPanel.add(LabelHelper.createHintLabel(" (9 dígitos)"));
 		mainPanel.add(celularPanel, gbc);
 
-		// Contenedor de errores
+        gbc.gridx = 0; gbc.gridy = 5;
+		mainPanel.add(LabelHelper.createLabel("Estado:", true), gbc);
+		gbc.gridx = 1;
+		JPanel estadoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+		estadoPanel.add(cmbEstado);
+		mainPanel.add(estadoPanel, gbc);
+
 		JPanel errorContainer = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		errorContainer.setPreferredSize(new Dimension(0, 30));
 		errorContainer.setBorder(new EmptyBorder(5, 10, 5, 10));
 		errorContainer.add(lblErrorMessage);
 
-		// Contenedor externo para formulario y contenedor de errores
 		JPanel contentWrapper = new JPanel(new BorderLayout());
 		contentWrapper.add(mainPanel, BorderLayout.CENTER);
 		contentWrapper.add(errorContainer, BorderLayout.SOUTH);
@@ -151,7 +163,7 @@ public class AddAlumnoModal extends JDialog {
 		add(buttonPanel, BorderLayout.SOUTH);
 	}
 
-	private void setupEventHandlers() {
+    private void setupEventHandlers() {
 		btnSave.addActionListener(e -> onSave());
 
 		btnCancel.addActionListener(e -> onCancel());
@@ -167,9 +179,9 @@ public class AddAlumnoModal extends JDialog {
 
 		txtNombres.addKeyListener(enterKeyListener);
 		txtApellidos.addKeyListener(enterKeyListener);
-		txtDni.addKeyListener(enterKeyListener);
 		txtEdad.addKeyListener(enterKeyListener);
 		txtCelular.addKeyListener(enterKeyListener);
+        cmbEstado.addKeyListener(enterKeyListener);
 
 		KeyAdapter clearErrorListener = new KeyAdapter() {
 			@Override
@@ -180,12 +192,12 @@ public class AddAlumnoModal extends JDialog {
 
 		txtNombres.addKeyListener(clearErrorListener);
 		txtApellidos.addKeyListener(clearErrorListener);
-		txtDni.addKeyListener(clearErrorListener);
 		txtEdad.addKeyListener(clearErrorListener);
 		txtCelular.addKeyListener(clearErrorListener);
+        cmbEstado.addKeyListener(clearErrorListener);
 	}
 
-	private void setupValidation() {
+    private void setupValidation() {
 		DocumentFilter asciiFilter = new DocumentFilter() {
 			@Override
 			public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
@@ -205,9 +217,6 @@ public class AddAlumnoModal extends JDialog {
 		((AbstractDocument) txtNombres.getDocument()).setDocumentFilter(asciiFilter);
 		((AbstractDocument) txtApellidos.getDocument()).setDocumentFilter(asciiFilter);
 
-		DocumentFilter dniFilter = new ValidationHelper.DigitsOnlyFilter(8);
-		((AbstractDocument) txtDni.getDocument()).setDocumentFilter(dniFilter);
-
 		DocumentFilter celularFilter = new ValidationHelper.DigitsOnlyFilter(9);
 		((AbstractDocument) txtCelular.getDocument()).setDocumentFilter(celularFilter);
 
@@ -215,19 +224,18 @@ public class AddAlumnoModal extends JDialog {
 		((AbstractDocument) txtEdad.getDocument()).setDocumentFilter(edadFilter);
 	}
 
-	private void onSave() {
+    private void onSave() {
 		if (validateForm()) {
 			try {
 				String nombres = txtNombres.getText().trim();
 				String apellidos = txtApellidos.getText().trim();
-				String dni = txtDni.getText().trim();
 				int edad = Integer.parseInt(txtEdad.getText().trim());
 				int celular = Integer.parseInt(txtCelular.getText().trim());
+                int estado = cmbEstado.getSelectedIndex();
 
-				Result<Alumno> result = _alumnoService.saveAlumno(nombres, apellidos, dni, edad, celular);
+				Result<Void> result = _alumnoService.editAlumno(selectedAlumno.getCodAlumno(), nombres, apellidos, edad, celular, estado);
 
 				if (result.isSuccess()) {
-					createdAlumno = result.getValue();
 					dialogResult = true;
 					dispose();
 				} else {
@@ -240,7 +248,7 @@ public class AddAlumnoModal extends JDialog {
 		}
 	}
 
-	private void onCancel() {
+    private void onCancel() {
 		dialogResult = false;
 		dispose();
 	}
@@ -271,26 +279,6 @@ public class AddAlumnoModal extends JDialog {
 		if (txtApellidos.getText().trim().length() < 2) {
 			ErrorHelper.showErrorMessage(lblErrorMessage, "Los apellidos deben tener al menos 2 caracteres");
 			txtApellidos.requestFocus();
-			return false;
-		}
-
-		// DNI
-		String dni = txtDni.getText().trim();
-		if (dni.length() != 8) {
-			ErrorHelper.showErrorMessage(lblErrorMessage, "El DNI debe tener exactamente 8 dígitos");
-			txtDni.requestFocus();
-			return false;
-		}
-
-		Result<Boolean> dniExists = _alumnoService.dniExists(dni);
-		if (dniExists.isError()) {
-			ErrorHelper.showErrorMessage(lblErrorMessage, dniExists.getError());
-			txtDni.requestFocus();
-			return false;
-		}
-		if (dniExists.getValue()) {
-			ErrorHelper.showErrorMessage(lblErrorMessage, "El DNI ya ha sido registrado");
-			txtDni.requestFocus();
 			return false;
 		}
 
@@ -328,9 +316,5 @@ public class AddAlumnoModal extends JDialog {
 
 	public boolean getDialogResult() {
 		return dialogResult;
-	}
-
-	public Alumno getCreatedAlumno() {
-		return createdAlumno;
 	}
 }

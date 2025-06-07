@@ -98,14 +98,14 @@ public class AlumnoRepository implements IAlumnoRepository {
 		}
 	}
 
-	/*public Result<Alumno> editAlumno(Alumno alumno) {
+	public Result<Void> editAlumno(Alumno alumno) {
 		String sql = """
                 UPDATE alumno
                 SET nombres = ?, apellidos = ?, edad = ?,  celular = ?, estado = ?
                 WHERE cod_alumno = ?
                 """;
 
-		try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+		try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql, Statement.NO_GENERATED_KEYS)) {
 			stmt.setString(1, alumno.getNombres());
 			stmt.setString(2, alumno.getApellidos());
 			stmt.setInt(3, alumno.getEdad());
@@ -116,18 +116,31 @@ public class AlumnoRepository implements IAlumnoRepository {
 			int affectedRows = stmt.executeUpdate();
 
 			if (affectedRows > 0) {
-				try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-					if (generatedKeys.next()) {
-						alumno.setCodAlumno(generatedKeys.getInt(1));
-						return Result.success(alumno);
-					}
-				}
+				return Result.success();
 			}
 
-			return Result.error("No se pudo insertar el alumno");
+			return Result.error("No se pudo editar al alumno");
 
 		} catch (SQLException e) {
-			return Result.error("Excepción al insertar el alumno", e);
+			return Result.error("Excepción al editar al alumno", e);
 		}
-	}*/
+	}
+
+	public Result<Void> deleteAlumno(int codigo) {
+		String sql = "DELETE FROM alumno WHERE cod_alumno = ?";
+
+		try(PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql, Statement.NO_GENERATED_KEYS)) {
+			stmt.setInt(1, codigo);
+
+			int affectedRows = stmt.executeUpdate();
+
+			if (affectedRows > 0) {
+				return Result.success();
+			}
+
+			return Result.error("No se pudo eliminar al alumno");
+		} catch (SQLException e) {
+			return Result.error("Excepción al eliminar al alumno", e);
+		}
+	}
 }

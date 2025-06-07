@@ -5,6 +5,10 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
 public class ValidationHelper {
+    public static boolean isAsciiOnly(String text) {
+		return text.chars().allMatch(c -> c < 128 && (Character.isLetter(c) || Character.isWhitespace(c)));
+	}
+
     public static class DigitsOnlyFilter extends DocumentFilter {
         private final int maxLength;
 

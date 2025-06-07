@@ -7,7 +7,6 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
 
 import application.core.interfaces.IAlumno;
 import global.Result;
@@ -163,12 +162,18 @@ public class AlumnoWindow extends JFrame {
 
 	private void onEditAlumno(int rowIndex) {
 		Alumno selectedAlumno = tableModel.getAlumnoAt(rowIndex);
-		// Reemplazar este dialog por la ventana de edición
-		JOptionPane.showMessageDialog(this,
-				"Editar alumno: " + selectedAlumno.getNombres() + " " + selectedAlumno.getApellidos() +
-						"\nCódigo: " + selectedAlumno.getCodAlumno(),
-				"Editar Alumno",
-				JOptionPane.INFORMATION_MESSAGE);
+		
+		EditAlumnoModal modal = new EditAlumnoModal(this, _alumnoService, selectedAlumno);
+		modal.setVisible(true);
+
+		if (modal.getDialogResult()) {
+			loadAlumnos();
+
+				JOptionPane.showMessageDialog(this,
+						"Alumno " + selectedAlumno.getNombres() + " " + selectedAlumno.getApellidos() +" editado exitosamente:\n",
+						"Éxito",
+						JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
 
 	private void onDeleteAlumno(int rowIndex) {
@@ -182,7 +187,17 @@ public class AlumnoWindow extends JFrame {
 				JOptionPane.WARNING_MESSAGE);
 
 		if (confirm == JOptionPane.YES_OPTION) {
-			// Primero, llamar el futuro servicio de eliminar. Después, remover de la lista como a continuación:
+			Result<Void> eliminarAlumno = _alumnoService.deleteAlumno(selectedAlumno.getCodAlumno());
+
+			if (eliminarAlumno.isError()) {
+				JOptionPane.showMessageDialog(this,
+					"Ocurrió un error al eliminar al alumno",
+					"Eror grave",
+					JOptionPane.ERROR_MESSAGE);
+
+				return;
+			}
+
 			tableModel.removeAlumno(rowIndex);
 			JOptionPane.showMessageDialog(this,
 					"Alumno eliminado correctamente",

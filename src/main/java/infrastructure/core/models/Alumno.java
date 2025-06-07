@@ -28,6 +28,15 @@ public class Alumno {
         this.estado = estado;
     }
 
+    public Alumno(int codAlumno, String nombres, String apellidos, int edad, int celular, int estado) {
+        this.codAlumno = codAlumno;
+        this.nombres = nombres;
+        this.apellidos = apellidos;
+        this.edad = edad;
+        this.celular = celular;
+        this.estado = estado;
+    }
+
     public void setCodAlumno(int codAlumno) {
         this.codAlumno = codAlumno;
     }
