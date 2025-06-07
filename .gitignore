@@ -23,3 +23,7 @@
 hs_err_pid*
 replay_pid*
 /target/
+target/classes/infrastructure/core/interfaces/IAlumnoRepository.class
+target/classes/infrastructure/core/models/Alumno.class
+target/classes/infrastructure/core/services/AlumnoRepository.class
+.project
