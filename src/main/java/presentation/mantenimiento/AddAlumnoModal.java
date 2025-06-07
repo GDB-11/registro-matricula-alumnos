@@ -16,7 +16,7 @@ import global.Result;
 import infrastructure.core.models.Alumno;
 import presentation.helper.ButtonHelper;
 import presentation.helper.ErrorHelper;
-import presentation.helper.LabelHelper;
+import presentation.helper.GridBagHelper;
 import presentation.helper.TextFieldHelper;
 import presentation.helper.ValidationHelper;
 
@@ -98,40 +98,12 @@ public class AddAlumnoModal extends JDialog {
 		gbc.gridwidth = 1;
 		gbc.anchor = GridBagConstraints.WEST;
 
-		gbc.gridx = 0; gbc.gridy = 1;
-		mainPanel.add(LabelHelper.createLabel("Nombres:", true), gbc);
-		gbc.gridx = 1;
-		mainPanel.add(txtNombres, gbc);
-
-		gbc.gridx = 0; gbc.gridy = 2;
-		mainPanel.add(LabelHelper.createLabel("Apellidos:", true), gbc);
-		gbc.gridx = 1;
-		mainPanel.add(txtApellidos, gbc);
-
-		gbc.gridx = 0; gbc.gridy = 3;
-		mainPanel.add(LabelHelper.createLabel("DNI:", true), gbc);
-		gbc.gridx = 1;
-		JPanel dniPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-		dniPanel.add(txtDni);
-		dniPanel.add(LabelHelper.createHintLabel(" (8 dígitos)"));
-		mainPanel.add(dniPanel, gbc);
-
-		gbc.gridx = 0; gbc.gridy = 4;
-		mainPanel.add(LabelHelper.createLabel("Edad:", true), gbc);
-		gbc.gridx = 1;
-		JPanel edadPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-		edadPanel.add(txtEdad);
-		edadPanel.add(LabelHelper.createHintLabel(" (años)"));
-		mainPanel.add(edadPanel, gbc);
-
-		gbc.gridx = 0; gbc.gridy = 5;
-		mainPanel.add(LabelHelper.createLabel("Celular:", true), gbc);
-		gbc.gridx = 1;
-		JPanel celularPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-		celularPanel.add(txtCelular);
-		celularPanel.add(LabelHelper.createHintLabel(" (9 dígitos)"));
-		mainPanel.add(celularPanel, gbc);
-
+		GridBagHelper.addLabelAndComponent(mainPanel, gbc, 1, "Nombres:", txtNombres);
+		GridBagHelper.addLabelAndComponent(mainPanel, gbc, 2, "Apellidos:", txtApellidos);
+		GridBagHelper.addLabelAndComponentWithHint(mainPanel, gbc, 3, "DNI:", txtDni, " (8 dígitos)");
+		GridBagHelper.addLabelAndComponentWithHint(mainPanel, gbc, 4, "Edad:", txtEdad, " (años)");
+		GridBagHelper.addLabelAndComponentWithHint(mainPanel, gbc, 5, "Celular:", txtCelular, " (9 dígitos)");
+		
 		// Contenedor de errores
 		JPanel errorContainer = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		errorContainer.setPreferredSize(new Dimension(0, 30));
@@ -189,14 +161,14 @@ public class AddAlumnoModal extends JDialog {
 		DocumentFilter asciiFilter = new DocumentFilter() {
 			@Override
 			public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
-				if (ValidationHelper.isAsciiOnly(string)) {
+				if (ValidationHelper.isAsciiAndSpanishOnly(string)) {
 					super.insertString(fb, offset, string, attr);
 				}
 			}
 
 			@Override
 			public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
-				if (ValidationHelper.isAsciiOnly(text)) {
+				if (ValidationHelper.isAsciiAndSpanishOnly(text)) {
 					super.replace(fb, offset, length, text, attrs);
 				}
 			}

@@ -43,7 +43,7 @@ public class CursoRepository implements ICursoRepository {
 
     }
 
-    public Result<Void> saveCurso(Curso curso) {
+    public Result<Curso> saveCurso(Curso curso) {
         String sql = """
                 INSERT INTO curso (cod_curso, asignatura, ciclo, creditos, horas)
                 VALUES (?, ?, ?, ?, ?)
@@ -59,7 +59,7 @@ public class CursoRepository implements ICursoRepository {
             int affectedRows = stmt.executeUpdate();
 
             if (affectedRows > 0) {
-                return Result.success();
+                return Result.success(curso);
             }
 
             return Result.error("No se pudo insertar el curso");

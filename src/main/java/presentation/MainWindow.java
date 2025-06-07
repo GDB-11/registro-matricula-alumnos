@@ -5,6 +5,7 @@ import javax.swing.border.EmptyBorder;
 import main.WindowFactory;
 import presentation.helper.WindowHelper;
 import presentation.mantenimiento.AlumnoWindow;
+import presentation.mantenimiento.CursoWindow;
 
 import java.io.Serial;
 
@@ -80,6 +81,7 @@ public class MainWindow extends JFrame {
         
         // Agregar eventos click para abrir ventanas secundarias
         mntm_alumno.addActionListener(e -> openAlumnoWindow());
+        mntm_curso.addActionListener(e -> openCursoWindow());
     }
 
     private void openAlumnoWindow() {
@@ -93,11 +95,21 @@ public class MainWindow extends JFrame {
         }
     }
 
+    private void openCursoWindow() {
+        try {
+            CursoWindow cursoWindow = windowFactory.createCursoWindow();
+
+            cursoWindow.setVisible(true);
+            System.out.println("CursoWindow abierto");
+        } catch (Exception e) {
+            handleWindowError("CursoWindow", e);
+        }
+    }
+
     private void handleWindowError(String windowName, Exception e) {
         System.err.println("Error abriendo " + windowName + e.getMessage());
         e.printStackTrace();
         
-        // Show user-friendly error dialog
         JOptionPane.showMessageDialog(
             this, 
             "Error al abrir la ventana de " + windowName + ":\n" + e.getMessage(),
