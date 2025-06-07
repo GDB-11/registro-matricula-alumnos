@@ -41,7 +41,7 @@ public class DatabaseInitializer {
     private void createCursoTable() {
         String sql = """
             CREATE TABLE IF NOT EXISTS curso (
-                cod_curso INTEGER PRIMARY KEY AUTOINCREMENT,
+                cod_curso INTEGER PRIMARY KEY,
                 asignatura TEXT NOT NULL,
                 ciclo INTEGER NOT NULL,
                 creditos INTEGER NOT NULL,
