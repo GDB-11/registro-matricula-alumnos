@@ -167,10 +167,11 @@ public class AlumnoWindow extends JFrame {
 		modal.setVisible(true);
 
 		if (modal.getDialogResult()) {
+			Alumno editedAlumno = modal.getEditedAlumno();
 			loadAlumnos();
 
 			JOptionPane.showMessageDialog(this,
-					"Alumno " + selectedAlumno.getNombres() + " " + selectedAlumno.getApellidos() + " editado exitosamente:\n",
+					"Alumno " + editedAlumno.getNombres() + " " + editedAlumno.getApellidos() + " editado exitosamente:\n",
 					"Éxito",
 					JOptionPane.INFORMATION_MESSAGE);
 		}

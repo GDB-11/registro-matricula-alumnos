@@ -24,7 +24,7 @@ public class CursoService implements ICurso {
         return _cursoRepository.saveCurso(curso);
     }
 
-    public Result<Void> editCurso(int codigo, String asignatura, int ciclo, int creditos, int horas) {
+    public Result<Curso> editCurso(int codigo, String asignatura, int ciclo, int creditos, int horas) {
         Curso curso = new Curso(codigo, asignatura, ciclo, creditos, horas);
 
         return _cursoRepository.editCurso(curso);

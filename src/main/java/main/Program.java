@@ -79,10 +79,9 @@ public class Program {
             try {
                 System.out.println("Configurando la interfaz de usuario...");
                 
-                // Setup look and feel
+                // Tema visual
                 FlatDarkLaf.setup();
                 
-                // Create and show main window
                 MainWindow mainWindow = windowFactory.createMainWindow();
                 mainWindow.setVisible(true);
                 

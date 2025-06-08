@@ -28,7 +28,7 @@ public class AlumnoService implements IAlumno {
 		return _alumnoRepository.dniExists(dni);
 	}
 
-	public Result<Void> editAlumno(int codigo, String nombres, String apellidos, int edad, int celular, int estado) {
+	public Result<Alumno> editAlumno(int codigo, String nombres, String apellidos, int edad, int celular, int estado) {
 		Alumno alumno = new Alumno(codigo, nombres, apellidos, edad, celular, estado);
 
 		return _alumnoRepository.editAlumno(alumno);

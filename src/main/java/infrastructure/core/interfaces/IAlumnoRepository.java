@@ -9,6 +9,6 @@ public interface IAlumnoRepository {
 	Result<List<Alumno>> getAllAlumnos();
 	Result<Alumno> saveAlumno(Alumno alumno);
 	Result<Boolean> dniExists(String dni);
-	Result<Void> editAlumno(Alumno alumno);
+	Result<Alumno> editAlumno(Alumno alumno);
 	Result<Void> deleteAlumno(int codigo);
 }

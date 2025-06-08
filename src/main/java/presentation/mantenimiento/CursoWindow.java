@@ -161,17 +161,18 @@ public class CursoWindow extends JFrame {
     private void onEditCurso(int rowIndex) {
 		Curso selectedCurso = tableModel.getCursoAt(rowIndex);
 		
-		/*EditCursoModal modal = new EditCursoModal(this, _cursoService, selectedCurso);
+		EditCursoModal modal = new EditCursoModal(this, _cursoService, selectedCurso);
 		modal.setVisible(true);
 
 		if (modal.getDialogResult()) {
+			Curso editedCurso = modal.getEditedCurso();
 			loadCursos();
 
             JOptionPane.showMessageDialog(this,
-                    "Curso " + selectedCurso.getAsignatura() + " editado exitosamente:\n",
+                    "Curso " + editedCurso.getCodCurso() + " - " + editedCurso.getAsignatura() + " editado exitosamente:\n",
                     "Éxito",
                     JOptionPane.INFORMATION_MESSAGE);
-		}*/
+		}
 	}
 
 	private void onDeleteCurso(int rowIndex) {

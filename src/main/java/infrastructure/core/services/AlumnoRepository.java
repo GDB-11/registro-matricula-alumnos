@@ -98,7 +98,7 @@ public class AlumnoRepository implements IAlumnoRepository {
 		}
 	}
 
-	public Result<Void> editAlumno(Alumno alumno) {
+	public Result<Alumno> editAlumno(Alumno alumno) {
 		String sql = """
                 UPDATE alumno
                 SET nombres = ?, apellidos = ?, edad = ?,  celular = ?, estado = ?
@@ -116,7 +116,7 @@ public class AlumnoRepository implements IAlumnoRepository {
 			int affectedRows = stmt.executeUpdate();
 
 			if (affectedRows > 0) {
-				return Result.success();
+				return Result.success(alumno);
 			}
 
 			return Result.error("No se pudo editar al alumno");

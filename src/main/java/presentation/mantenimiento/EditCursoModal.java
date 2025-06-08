@@ -26,9 +26,9 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
-import application.core.interfaces.IAlumno;
+import application.core.interfaces.ICurso;
 import global.Result;
-import infrastructure.core.models.Alumno;
+import infrastructure.core.models.Curso;
 import presentation.helper.ButtonHelper;
 import presentation.helper.ComboBoxHelper;
 import presentation.helper.ErrorHelper;
@@ -36,28 +36,28 @@ import presentation.helper.GridBagHelper;
 import presentation.helper.TextFieldHelper;
 import presentation.helper.ValidationHelper;
 
-public class EditAlumnoModal extends JDialog {
+public class EditCursoModal extends JDialog {
     @Serial
 	private static final long serialVersionUID = 1L;
 
-	private final IAlumno _alumnoService;
-	private JTextField txtNombres;
-	private JTextField txtApellidos;
-	private JTextField txtEdad;
-	private JTextField txtCelular;
-    private JComboBox cmbEstado;
+	private final ICurso _cursoService;
+
+	private JTextField txtAsignatura;
+	private JComboBox cmbCiclo;
+	private JTextField txtCredito;
+	private JTextField txtHora;
 	private JButton btnSave;
 	private JButton btnCancel;
 	private JLabel lblErrorMessage;
 
-    private boolean dialogResult = false;
-	private Alumno selectedAlumno = null;
-	private Alumno editedAlumno = null;
+	private boolean dialogResult = false;
+	private Curso selectedCurso = null;
+    private Curso editedCurso = null;
 
-    public EditAlumnoModal(Frame parent, IAlumno alumnoService, Alumno selectedAlumno) {
-		super(parent, "Agregar Nuevo Alumno", true);
-		this._alumnoService = alumnoService;
-        this.selectedAlumno = selectedAlumno;
+    public EditCursoModal(Frame parent, ICurso cursoService, Curso selectedCurso) {
+		super(parent, "Editar Curso", true);
+		this._cursoService = cursoService;
+        this.selectedCurso = selectedCurso;
 
 		initializeComponents();
 		setupLayout();
@@ -71,17 +71,15 @@ public class EditAlumnoModal extends JDialog {
 	}
 
     private void initializeComponents() {
-		txtNombres = new JTextField(20);
-		txtApellidos = new JTextField(20);
-		txtEdad = new JTextField(3);
-		txtCelular = new JTextField(9);
-        cmbEstado = new JComboBox<>(new String[]{"Registrado", "Matriculado", "Retirado"});
+		txtAsignatura = new JTextField(20);
+		cmbCiclo = new JComboBox<>(new String[] {"Primero", "Segundo", "Tercero", "Cuarto", "Quinto", "Sexto"});
+		txtCredito = new JTextField(3);
+		txtHora = new JTextField(9);
 
-		TextFieldHelper.styleTextField(txtNombres, selectedAlumno.getNombres());
-		TextFieldHelper.styleTextField(txtApellidos, selectedAlumno.getApellidos());
-		TextFieldHelper.styleTextField(txtEdad, String.valueOf(selectedAlumno.getEdad()));
-		TextFieldHelper.styleTextField(txtCelular, String.valueOf(selectedAlumno.getCelular()));
-		ComboBoxHelper.styleComboBox(cmbEstado, selectedAlumno.getEstado());
+		TextFieldHelper.styleTextField(txtAsignatura, selectedCurso.getAsignatura());
+        ComboBoxHelper.styleComboBox(cmbCiclo, selectedCurso.getCiclo());
+		TextFieldHelper.styleTextField(txtCredito, String.valueOf(selectedCurso.getCreditos()));
+		TextFieldHelper.styleTextField(txtHora, String.valueOf(selectedCurso.getHoras()));
 
 		btnSave = new JButton("Guardar");
 		btnCancel = new JButton("Cancelar");
@@ -105,7 +103,7 @@ public class EditAlumnoModal extends JDialog {
 		gbc.insets = new Insets(8, 8, 8, 8);
 		gbc.anchor = GridBagConstraints.WEST;
 
-		JLabel titleLabel = new JLabel("Datos del Alumno");
+		JLabel titleLabel = new JLabel("Datos del Curso");
 		titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
         
 		gbc.gridx = 0; gbc.gridy = 0;
@@ -116,17 +114,18 @@ public class EditAlumnoModal extends JDialog {
 		gbc.gridwidth = 1;
 		gbc.anchor = GridBagConstraints.WEST;
 
-		GridBagHelper.addLabelAndComponent(mainPanel, gbc, 1, "Nombres:", txtNombres);
-    	GridBagHelper.addLabelAndComponent(mainPanel, gbc, 2, "Apellidos:", txtApellidos);
-    	GridBagHelper.addLabelAndComponentWithHint(mainPanel, gbc, 3, "Edad:", txtEdad, " (años)");
-    	GridBagHelper.addLabelAndComponentWithHint(mainPanel, gbc, 4, "Celular:", txtCelular, " (9 dígitos)");
-    	GridBagHelper.addLabelAndComponent(mainPanel, gbc, 5, "Estado:", cmbEstado);
+    	GridBagHelper.addLabelAndComponent(mainPanel, gbc, 1, "Asignatura:", txtAsignatura);
+    	GridBagHelper.addLabelAndComponent(mainPanel, gbc, 2, "Ciclo:", cmbCiclo);
+    	GridBagHelper.addLabelAndComponent(mainPanel, gbc, 3, "Créditos:", txtCredito);
+    	GridBagHelper.addLabelAndComponent(mainPanel, gbc, 4, "Horas:", txtHora);
 
+		// Contenedor de errores
 		JPanel errorContainer = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		errorContainer.setPreferredSize(new Dimension(0, 30));
 		errorContainer.setBorder(new EmptyBorder(5, 10, 5, 10));
 		errorContainer.add(lblErrorMessage);
 
+		// Contenedor externo para formulario y contenedor de errores
 		JPanel contentWrapper = new JPanel(new BorderLayout());
 		contentWrapper.add(mainPanel, BorderLayout.CENTER);
 		contentWrapper.add(errorContainer, BorderLayout.SOUTH);
@@ -153,11 +152,10 @@ public class EditAlumnoModal extends JDialog {
 			}
 		};
 
-		txtNombres.addKeyListener(enterKeyListener);
-		txtApellidos.addKeyListener(enterKeyListener);
-		txtEdad.addKeyListener(enterKeyListener);
-		txtCelular.addKeyListener(enterKeyListener);
-        cmbEstado.addKeyListener(enterKeyListener);
+		txtAsignatura.addKeyListener(enterKeyListener);
+		cmbCiclo.addKeyListener(enterKeyListener);
+		txtCredito.addKeyListener(enterKeyListener);
+		txtHora.addKeyListener(enterKeyListener);
 
 		KeyAdapter clearErrorListener = new KeyAdapter() {
 			@Override
@@ -166,11 +164,10 @@ public class EditAlumnoModal extends JDialog {
 			}
 		};
 
-		txtNombres.addKeyListener(clearErrorListener);
-		txtApellidos.addKeyListener(clearErrorListener);
-		txtEdad.addKeyListener(clearErrorListener);
-		txtCelular.addKeyListener(clearErrorListener);
-        cmbEstado.addKeyListener(clearErrorListener);
+		txtAsignatura.addKeyListener(clearErrorListener);
+		cmbCiclo.addKeyListener(clearErrorListener);
+		txtCredito.addKeyListener(clearErrorListener);
+		txtHora.addKeyListener(clearErrorListener);
 	}
 
     private void setupValidation() {
@@ -190,29 +187,23 @@ public class EditAlumnoModal extends JDialog {
 			}
 		};
 
-		((AbstractDocument) txtNombres.getDocument()).setDocumentFilter(asciiFilter);
-		((AbstractDocument) txtApellidos.getDocument()).setDocumentFilter(asciiFilter);
-
-		DocumentFilter celularFilter = new ValidationHelper.DigitsOnlyFilter(9);
-		((AbstractDocument) txtCelular.getDocument()).setDocumentFilter(celularFilter);
-
-		DocumentFilter edadFilter = new ValidationHelper.DigitsOnlyFilter(3);
-		((AbstractDocument) txtEdad.getDocument()).setDocumentFilter(edadFilter);
+		((AbstractDocument) txtAsignatura.getDocument()).setDocumentFilter(asciiFilter);
+		((AbstractDocument) txtCredito.getDocument()).setDocumentFilter(new ValidationHelper.DigitsOnlyFilter(2));
+		((AbstractDocument) txtHora.getDocument()).setDocumentFilter(new ValidationHelper.DigitsOnlyFilter(3));
 	}
 
     private void onSave() {
 		if (validateForm()) {
 			try {
-				String nombres = txtNombres.getText().trim();
-				String apellidos = txtApellidos.getText().trim();
-				int edad = Integer.parseInt(txtEdad.getText().trim());
-				int celular = Integer.parseInt(txtCelular.getText().trim());
-                int estado = cmbEstado.getSelectedIndex();
+				String asignatura = txtAsignatura.getText().trim();
+				int ciclo = cmbCiclo.getSelectedIndex();
+				int creditos = Integer.parseInt(txtCredito.getText().trim());
+				int horas = Integer.parseInt(txtHora.getText().trim());
 
-				Result<Alumno> result = _alumnoService.editAlumno(selectedAlumno.getCodAlumno(), nombres, apellidos, edad, celular, estado);
+				Result<Curso> result = _cursoService.editCurso(selectedCurso.getCodCurso(), asignatura, ciclo, creditos, horas);
 
 				if (result.isSuccess()) {
-					editedAlumno = result.getValue();
+					editedCurso = result.getValue();
 					dialogResult = true;
 					dispose();
 				} else {
@@ -225,66 +216,66 @@ public class EditAlumnoModal extends JDialog {
 		}
 	}
 
-    private void onCancel() {
+	private void onCancel() {
 		dialogResult = false;
 		dispose();
 	}
 
-	private boolean validateForm() {
+    private boolean validateForm() {
 		ErrorHelper.clearErrorMessage(lblErrorMessage);
 
-		// Nombres
-		if (txtNombres.getText().trim().isEmpty()) {
-			ErrorHelper.showErrorMessage(lblErrorMessage, "El campo Nombres es obligatorio");
-			txtNombres.requestFocus();
+		// Asignatura
+		if (txtAsignatura.getText().trim().isEmpty()) {
+			ErrorHelper.showErrorMessage(lblErrorMessage, "El campo Asignatura es obligatorio");
+			txtAsignatura.requestFocus();
 			return false;
 		}
 
-		if (txtNombres.getText().trim().length() < 2) {
-			ErrorHelper.showErrorMessage(lblErrorMessage, "Los nombres deben tener al menos 2 caracteres");
-			txtNombres.requestFocus();
+		if (txtAsignatura.getText().trim().length() < 3) {
+			ErrorHelper.showErrorMessage(lblErrorMessage, "La Asignatura debe tener al menos 3 caracteres");
+			txtAsignatura.requestFocus();
 			return false;
 		}
 
-		// Apellidos
-		if (txtApellidos.getText().trim().isEmpty()) {
-			ErrorHelper.showErrorMessage(lblErrorMessage, "El campo Apellidos es obligatorio");
-			txtApellidos.requestFocus();
-			return false;
-		}
-
-		if (txtApellidos.getText().trim().length() < 2) {
-			ErrorHelper.showErrorMessage(lblErrorMessage, "Los apellidos deben tener al menos 2 caracteres");
-			txtApellidos.requestFocus();
-			return false;
-		}
-
-		// Edad
-		String edadText = txtEdad.getText().trim();
-		if (edadText.isEmpty()) {
-			ErrorHelper.showErrorMessage(lblErrorMessage, "El campo Edad es obligatorio");
-			txtEdad.requestFocus();
+		// Credito
+		String creditoText = txtCredito.getText().trim();
+		if (creditoText.isEmpty()) {
+			ErrorHelper.showErrorMessage(lblErrorMessage, "El campo Crédito es obligatorio");
+			txtCredito.requestFocus();
 			return false;
 		}
 
 		try {
-			int edad = Integer.parseInt(edadText);
-			if (edad < 3 || edad > 110) {
-				ErrorHelper.showErrorMessage(lblErrorMessage, "La edad debe estar entre 3 y 110 años");
-				txtEdad.requestFocus();
+			int creditos = Integer.parseInt(creditoText);
+			if (creditos < 0 || creditos > 8) {
+				ErrorHelper.showErrorMessage(lblErrorMessage, "Los créditos debe estar entre 0 y 8");
+				txtCredito.requestFocus();
 				return false;
 			}
 		} catch (NumberFormatException e) {
-			ErrorHelper.showErrorMessage(lblErrorMessage, "La edad debe ser un número válido");
-			txtEdad.requestFocus();
+			ErrorHelper.showErrorMessage(lblErrorMessage, "Créditos debe tener un número válido");
+			txtCredito.requestFocus();
 			return false;
 		}
 
-		// Celular
-		String celular = txtCelular.getText().trim();
-		if (celular.length() != 9) {
-			ErrorHelper.showErrorMessage(lblErrorMessage, "El celular debe tener exactamente 9 dígitos");
-			txtCelular.requestFocus();
+		// Horas
+		String horaText = txtCredito.getText().trim();
+		if (horaText.isEmpty()) {
+			ErrorHelper.showErrorMessage(lblErrorMessage, "El campo Horas es obligatorio");
+			txtHora.requestFocus();
+			return false;
+		}
+
+		try {
+			int horas = Integer.parseInt(horaText);
+			if (horas < 1 || horas > 99) {
+				ErrorHelper.showErrorMessage(lblErrorMessage, "Los créditos debe estar entre 1 y 99");
+				txtHora.requestFocus();
+				return false;
+			}
+		} catch (NumberFormatException e) {
+			ErrorHelper.showErrorMessage(lblErrorMessage, "Horas debe tener un número válido");
+			txtHora.requestFocus();
 			return false;
 		}
 
@@ -295,7 +286,7 @@ public class EditAlumnoModal extends JDialog {
 		return dialogResult;
 	}
 
-	public Alumno getEditedAlumno() {
-		return editedAlumno;
+	public Curso getEditedCurso() {
+		return editedCurso;
 	}
 }

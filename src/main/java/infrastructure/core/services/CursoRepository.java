@@ -87,10 +87,10 @@ public class CursoRepository implements ICursoRepository {
 		}
 	}
 
-    public Result<Void> editCurso(Curso curso) {
+    public Result<Curso> editCurso(Curso curso) {
         String sql = """
                 UPDATE curso
-                SET asignatura = ?, ciclo = ?, edad = ?,  creditos = ?, horas = ?
+                SET asignatura = ?, ciclo = ?,  creditos = ?, horas = ?
                 WHERE cod_curso = ?
                 """;
 
@@ -104,7 +104,7 @@ public class CursoRepository implements ICursoRepository {
             int affectedRows = stmt.executeUpdate();
 
             if (affectedRows > 0) {
-                return Result.success();
+                return Result.success(curso);
             }
 
             return Result.error("No se pudo editar el curso");
