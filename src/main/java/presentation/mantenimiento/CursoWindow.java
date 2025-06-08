@@ -144,7 +144,7 @@ public class CursoWindow extends JFrame {
 		AddCursoModal modal = new AddCursoModal(this, _cursoService);
 		modal.setVisible(true);
 
-		/*if (modal.getDialogResult()) {
+		if (modal.getDialogResult()) {
 			Curso newCurso = modal.getCreatedCurso();
 			if (newCurso != null) {
 				loadCursos();
@@ -155,7 +155,7 @@ public class CursoWindow extends JFrame {
 						"Éxito",
 						JOptionPane.INFORMATION_MESSAGE);
 			}
-		}*/
+		}
 	}
 
     private void onEditCurso(int rowIndex) {
