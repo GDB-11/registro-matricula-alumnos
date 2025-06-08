@@ -300,8 +300,8 @@ public class AddCursoModal extends JDialog {
 
 		try {
 			int horas = Integer.parseInt(horaText);
-			if (horas < 1 || horas > 1000) {
-				ErrorHelper.showErrorMessage(lblErrorMessage, "Los créditos debe estar entre 1 y 1000");
+			if (horas < 1 || horas > 99) {
+				ErrorHelper.showErrorMessage(lblErrorMessage, "Los créditos debe estar entre 1 y 99");
 				txtHora.requestFocus();
 				return false;
 			}
@@ -310,6 +310,8 @@ public class AddCursoModal extends JDialog {
 			txtHora.requestFocus();
 			return false;
 		}
+
+		return true;
 	}
 
 	public boolean getDialogResult() {
