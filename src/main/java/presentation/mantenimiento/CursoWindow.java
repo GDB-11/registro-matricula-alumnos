@@ -176,7 +176,7 @@ public class CursoWindow extends JFrame {
 
 	private void onDeleteCurso(int rowIndex) {
 		Curso selectedCurso = tableModel.getCursoAt(rowIndex);
-		/*int confirm = JOptionPane.showConfirmDialog(this,
+		int confirm = JOptionPane.showConfirmDialog(this,
 				"¿Está seguro que desea eliminar el curso:\n" +
 						selectedCurso.getCodCurso() + " - " + selectedCurso.getAsignatura() + "?",
 				"Confirmar eliminación",
@@ -184,11 +184,11 @@ public class CursoWindow extends JFrame {
 				JOptionPane.WARNING_MESSAGE);
 
 		if (confirm == JOptionPane.YES_OPTION) {
-			Result<Void> eliminarAlumno = _cursoService.deleteCurso(selectedCurso.getCodCurso());
+			Result<Void> eliminarCurso = _cursoService.deleteCurso(selectedCurso.getCodCurso());
 
-			if (eliminarAlumno.isError()) {
+			if (eliminarCurso.isError()) {
 				JOptionPane.showMessageDialog(this,
-					"Ocurrió un error al eliminar al alumno",
+					"Ocurrió un error al eliminar el curso",
 					"Eror grave",
 					JOptionPane.ERROR_MESSAGE);
 
@@ -200,7 +200,7 @@ public class CursoWindow extends JFrame {
 					"Curso eliminado correctamente",
 					"Eliminación exitosa",
 					JOptionPane.INFORMATION_MESSAGE);
-		}*/
+		}
 	}
 
 	private void showErrorMessage(String title, String message) {
