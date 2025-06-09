@@ -1,22 +1,22 @@
 package infrastructure.core.models;
 
 public class Matricula {
-    private int correlativo;
+    private int numMatricula;
     private int codAlumno;
     private int codCurso;
     private String fecha;
     private String hora;
 
-    public Matricula(int correlativo, int codAlumno, int codCurso, String fecha, String hora) {
-        this.correlativo = correlativo;
+    public Matricula(int numMatricula, int codAlumno, int codCurso, String fecha, String hora) {
+        this.numMatricula = numMatricula;
         this.codAlumno = codAlumno;
         this.codCurso = codCurso;
         this.fecha = fecha;
         this.hora = hora;
     }
 
-    public int getCorrelativo() {
-        return correlativo;
+    public int getNumMatricula() {
+        return numMatricula;
     }
 
     public int getCodAlumno() {
@@ -35,8 +35,8 @@ public class Matricula {
         return hora;
     }
 
-    public void setCorrelativo(int correlativo) {
-        this.correlativo = correlativo;
+    public void setNumMatricula(int numMatricula) {
+        this.numMatricula = numMatricula;
     }
 
     public void setCodAlumno(int codAlumno) {
