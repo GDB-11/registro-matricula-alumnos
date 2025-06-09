@@ -56,11 +56,11 @@ public class DatabaseInitializer {
     private void createMatriculaTable() {
         String sql = """
             CREATE TABLE IF NOT EXISTS matricula (
-                correlativo INTEGER PRIMARY KEY AUTOINCREMENT,
+                num_matricula INTEGER PRIMARY KEY AUTOINCREMENT,
                 cod_alumno INTEGER NOT NULL,
                 cod_curso INTEGER NOT NULL,
-                fecha DATE NOT NULL,
-                hora TIME NOT NULL,
+                fecha TEXT NOT NULL,
+                hora TEXT NOT NULL,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (cod_alumno) REFERENCES alumno(cod_alumno),
                 FOREIGN KEY (cod_curso) REFERENCES curso(cod_curso)
@@ -78,7 +78,7 @@ public class DatabaseInitializer {
                 fecha DATE NOT NULL,
                 hora TIME NOT NULL,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (num_matricula) REFERENCES matricula(correlativo)
+                FOREIGN KEY (num_matricula) REFERENCES matricula(num_matricula)
             )
             """;
 
