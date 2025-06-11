@@ -35,6 +35,16 @@ public class AlumnoService implements IAlumno {
 	}
 
 	public Result<Void> deleteAlumno(int codigo) {
+		Result<Alumno> alumno = _alumnoRepository.getAlumnoByCodigo(codigo);
+
+		if (alumno.getValue().getEstado() != 0) {
+			return Result.error("No es posible eliminar alumnos con estado 'matriculado' o 'retirado'");
+		}
+
 		return _alumnoRepository.deleteAlumno(codigo);
+	}
+
+	public Result<List<Alumno>> getAlumnosForMatricula() {
+		return _alumnoRepository.getAlumnosForMatricula();
 	}
 }

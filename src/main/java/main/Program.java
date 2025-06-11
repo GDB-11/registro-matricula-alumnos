@@ -1,5 +1,7 @@
 package main;
 
+import application.core.interfaces.IMatricula;
+import application.core.services.MatriculaService;
 import com.formdev.flatlaf.FlatDarkLaf;
 import application.core.interfaces.IAlumno;
 import application.core.interfaces.ICurso;
@@ -7,8 +9,10 @@ import application.core.services.AlumnoService;
 import application.core.services.CursoService;
 import infrastructure.core.interfaces.IAlumnoRepository;
 import infrastructure.core.interfaces.ICursoRepository;
+import infrastructure.core.interfaces.IMatriculaRepository;
 import infrastructure.core.services.AlumnoRepository;
 import infrastructure.core.services.CursoRepository;
+import infrastructure.core.services.MatriculaRepository;
 import presentation.MainWindow;
 
 /**
@@ -57,10 +61,12 @@ public class Program {
             // Registrar repositorios
             container.addSingleton(IAlumnoRepository.class, AlumnoRepository.class);
             container.addSingleton(ICursoRepository.class, CursoRepository.class);
+            container.addSingleton(IMatriculaRepository.class, MatriculaRepository.class);
 
             // Registrar servicios
             container.addSingleton(IAlumno.class, AlumnoService.class);
             container.addSingleton(ICurso.class, CursoService.class);
+            container.addSingleton(IMatricula.class, MatriculaService.class);
 
             // Debug: Imprimir servicios registrados
             container.printRegisteredServices();

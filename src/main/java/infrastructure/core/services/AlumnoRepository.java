@@ -46,7 +46,6 @@ public class AlumnoRepository implements IAlumnoRepository {
     	} catch (SQLException e) {
     		return Result.error("Error obteniendo a todos los alumnos", e);
     	}
-    	
     }
 
     public Result<Alumno> saveAlumno(Alumno alumno) { 
@@ -74,7 +73,6 @@ public class AlumnoRepository implements IAlumnoRepository {
             }
             
             return Result.error("No se pudo insertar el alumno");
-    		
     	} catch (SQLException e) {
     		return Result.error("Excepción al insertar el alumno", e);
     	}
@@ -120,7 +118,6 @@ public class AlumnoRepository implements IAlumnoRepository {
 			}
 
 			return Result.error("No se pudo editar al alumno");
-
 		} catch (SQLException e) {
 			return Result.error("Excepción al editar al alumno", e);
 		}
@@ -141,6 +138,88 @@ public class AlumnoRepository implements IAlumnoRepository {
 			return Result.error("No se pudo eliminar al alumno");
 		} catch (SQLException e) {
 			return Result.error("Excepción al eliminar al alumno", e);
+		}
+	}
+
+	public Result<Alumno> getAlumnoByCodigo(int codigo) {
+		String sql = "SELECT * FROM alumno WHERE cod_alumno = ?";
+
+		try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql)) {
+			stmt.setInt(1, codigo);
+
+			try (ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
+					int codigoAlumno = rs.getInt("cod_alumno");
+					String nombres = rs.getString("nombres");
+					String apellidos = rs.getString("apellidos");
+					String dni = rs.getString("dni");
+					int edad = rs.getInt("edad");
+					int celular = rs.getInt("celular");
+					int estado = rs.getInt("estado");
+
+					return Result.success(new Alumno(codigoAlumno, nombres, apellidos, dni, edad, celular, estado));
+				} else {
+					return Result.error("No se encontró el alumno con código " + codigo);
+				}
+			}
+		} catch (SQLException e) {
+			return Result.error("Error obteniendo alumno con código " + codigo, e);
+		}
+	}
+
+	public Result<Void> updateToMatriculado(int codigo) {
+		String sql = """
+                UPDATE alumno
+                SET estado = 1
+                WHERE cod_alumno = ?
+                """;
+
+		try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql, Statement.NO_GENERATED_KEYS)) {
+			stmt.setInt(1, codigo);
+
+			int affectedRows = stmt.executeUpdate();
+
+			if (affectedRows > 0) {
+				return Result.success();
+			}
+
+			return Result.error("No se pudo cambiar el estado a 'matriculado' al alumno " + codigo);
+		} catch (SQLException e) {
+			return Result.error("Excepción al cambiar el estado a 'matriculado' al alumno " + codigo, e);
+		}
+	}
+
+	public Result<List<Alumno>> getAlumnosForMatricula() {
+		String sql = """
+				SELECT
+					a.*
+				FROM
+					alumno a
+					LEFT JOIN matricula m ON a.cod_alumno = m.cod_alumno
+				WHERE
+					m.cod_alumno IS NULL;
+				""";
+
+		List<Alumno> alumnos = new ArrayList<>();
+
+		try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql);
+			 ResultSet rs = stmt.executeQuery()) {
+			while (rs.next()) {
+				int codigo = rs.getInt("cod_alumno");
+				String nombres = rs.getString("nombres");
+				String apellidos = rs.getString("apellidos");
+				String dni = rs.getString("dni");
+				int edad = rs.getInt("edad");
+				int celular = rs.getInt("celular");
+				int estado = rs.getInt("estado");
+
+				Alumno alumno = new Alumno(codigo, nombres, apellidos, dni, edad, celular, estado);
+				alumnos.add(alumno);
+			}
+
+			return Result.success(alumnos);
+		} catch (SQLException e) {
+			return Result.error("Error obteniendo a todos los alumnos", e);
 		}
 	}
 }

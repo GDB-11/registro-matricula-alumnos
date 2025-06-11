@@ -1,11 +1,8 @@
 package presentation.helper;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-
-import javax.swing.BorderFactory;
-import javax.swing.JComboBox;
+import java.awt.*;
+import java.util.function.Function;
+import javax.swing.*;
 
 public class ComboBoxHelper {
     
@@ -26,6 +23,27 @@ public class ComboBoxHelper {
         
         if (selectedIndex >= 0 && selectedIndex < comboBox.getItemCount()) {
             comboBox.setSelectedIndex(selectedIndex);
+        }
+    }
+
+    public static class GenericComboBoxRenderer<T> extends DefaultListCellRenderer {
+        private final Function<T, String> displayFunction;
+
+        public GenericComboBoxRenderer(Function<T, String> displayFunction) {
+            this.displayFunction = displayFunction;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index,
+                                                      boolean isSelected, boolean cellHasFocus) {
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+            if (value != null) {
+                setText(displayFunction.apply((T) value));
+            }
+
+            return this;
         }
     }
 }

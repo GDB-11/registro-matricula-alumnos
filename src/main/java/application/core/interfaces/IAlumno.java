@@ -11,4 +11,5 @@ public interface IAlumno {
 	Result<Boolean> dniExists(String dni);
 	Result<Alumno> editAlumno(int codigo, String nombres, String apellidos, int edad, int celular, int estado);
 	Result<Void> deleteAlumno(int codigo);
+	Result<List<Alumno>> getAlumnosForMatricula();
 }

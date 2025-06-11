@@ -192,7 +192,7 @@ public class AlumnoWindow extends JFrame {
 
 			if (eliminarAlumno.isError()) {
 				JOptionPane.showMessageDialog(this,
-					"Ocurrió un error al eliminar al alumno",
+						eliminarAlumno.getError(),
 					"Eror grave",
 					JOptionPane.ERROR_MESSAGE);
 

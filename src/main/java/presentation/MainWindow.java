@@ -6,6 +6,7 @@ import main.WindowFactory;
 import presentation.helper.WindowHelper;
 import presentation.mantenimiento.AlumnoWindow;
 import presentation.mantenimiento.CursoWindow;
+import presentation.registro.matricula.MatriculaWindow;
 
 import java.io.Serial;
 
@@ -82,6 +83,7 @@ public class MainWindow extends JFrame {
         // Agregar eventos click para abrir ventanas secundarias
         mntm_alumno.addActionListener(e -> openAlumnoWindow());
         mntm_curso.addActionListener(e -> openCursoWindow());
+        mntm_matricula.addActionListener(e -> openMatriculaWindow());
     }
 
     private void openAlumnoWindow() {
@@ -103,6 +105,17 @@ public class MainWindow extends JFrame {
             System.out.println("CursoWindow abierto");
         } catch (Exception e) {
             handleWindowError("CursoWindow", e);
+        }
+    }
+
+    private void openMatriculaWindow() {
+        try {
+            MatriculaWindow matriculaWindow = windowFactory.createMatriculaWindow();
+
+            matriculaWindow.setVisible(true);
+            System.out.println("MatriculaWindow abierto");
+        } catch (Exception e) {
+            handleWindowError("MatriculaWindow", e);
         }
     }
 

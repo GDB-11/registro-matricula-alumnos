@@ -8,49 +8,127 @@ import main.DatabaseManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MatriculaRepository implements IMatriculaRepository {
     private final DatabaseManager _databaseManager;
-    String sql = """
-            CREATE TABLE IF NOT EXISTS matricula (
-                numMatricula INTEGER PRIMARY KEY AUTOINCREMENT,
-                cod_alumno INTEGER NOT NULL,
-                cod_curso INTEGER NOT NULL,
-                fecha DATE NOT NULL,
-                hora TIME NOT NULL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (cod_alumno) REFERENCES alumno(cod_alumno),
-                FOREIGN KEY (cod_curso) REFERENCES curso(cod_curso)
-            )
-            """;
 
     public MatriculaRepository(DatabaseManager databaseManager) {
         _databaseManager = databaseManager;
     }
 
-    public Result<List<Matricula>> getAllCursos() {
-        String sql = "SELECT * FROM curso ORDER BY cod_curso";
+    public Result<List<Matricula>> getAllMatriculas() {
+        String sql = "SELECT * FROM matricula ORDER BY num_matricula";
 
         List<Matricula> matriculas = new ArrayList<>();
 
         try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                int codigo = rs.getInt("cod_curso");
-                String asignatura = rs.getString("asignatura");
-                int ciclo = rs.getInt("ciclo");
-                int creditos = rs.getInt("creditos");
-                int horas = rs.getInt("horas");
+                int numMatricula = rs.getInt("num_matricula");
+                int codAlumno = rs.getInt("cod_alumno");
+                int codCurso = rs.getInt("cod_curso");
+                String fecha = rs.getString("fecha");
+                String hora = rs.getString("hora");
 
-                cursos.add(new Curso(codigo, asignatura, ciclo, creditos, horas));
+                matriculas.add(new Matricula(numMatricula, codAlumno, codCurso, fecha, hora));
             }
 
-            return Result.success(cursos);
+            return Result.success(matriculas);
         } catch (SQLException e) {
-            return Result.error("Error obteniendo todos los cursos", e);
+            return Result.error("Error obteniendo todas los matrículas", e);
         }
+    }
 
+    public Result<Matricula> saveMatricula(Matricula matricula) {
+        String sql = """
+                INSERT INTO matricula (cod_alumno, cod_curso, fecha, hora)
+                VALUES (?, ?, ?, ?)
+                """;
+
+        try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setInt(1, matricula.getCodAlumno());
+            stmt.setInt(2, matricula.getCodCurso());
+            stmt.setString(3, matricula.getFecha());
+            stmt.setString(4, matricula.getHora());
+
+            int affectedRows = stmt.executeUpdate();
+
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        matricula.setCodAlumno(generatedKeys.getInt(1));
+                        return Result.success(matricula);
+                    }
+                }
+            }
+
+            return Result.error("No se pudo insertar la matrícula");
+        } catch (SQLException e) {
+            return Result.error("Excepción al insertar la matrícula", e);
+        }
+    }
+
+    public Result<Matricula> editMatricula(Matricula matricula) {
+        String sql = """
+                UPDATE matricula
+                SET cod_curso = ?, fecha = ?, hora = ?
+                WHERE num_matricula = ?
+                """;
+
+        try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql, Statement.NO_GENERATED_KEYS)) {
+            stmt.setInt(1, matricula.getCodCurso());
+            stmt.setString(2, matricula.getFecha());
+            stmt.setString(3, matricula.getHora());
+            stmt.setInt(4, matricula.getNumMatricula());
+
+            int affectedRows = stmt.executeUpdate();
+
+            if (affectedRows > 0) {
+                return Result.success(matricula);
+            }
+
+            return Result.error("No se pudo editar la matrícula");
+        } catch (SQLException e) {
+            return Result.error("Excepción al editar la matrícula", e);
+        }
+    }
+
+    public Result<Void> deleteMatricula(int numMatricula) {
+        String sql = "DELETE FROM matricula WHERE num_matricula = ?";
+
+        try(PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql, Statement.NO_GENERATED_KEYS)) {
+            stmt.setInt(1, numMatricula);
+
+            int affectedRows = stmt.executeUpdate();
+
+            if (affectedRows > 0) {
+                return Result.success();
+            }
+
+            return Result.error("No se pudo eliminar la matrícula");
+        } catch (SQLException e) {
+            return Result.error("Excepción al eliminar la matrícula", e);
+        }
+    }
+
+    public Result<Boolean> alumnoMatriculado(int codAlumno) {
+        String sql = "SELECT COUNT(*) FROM matricula WHERE cod_alumno = ?";
+
+        try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setInt(1, codAlumno);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt(1);
+                    return Result.success(count > 0);
+                }
+                return Result.success(false);
+            }
+        } catch (SQLException e) {
+            return Result.error("Error verificando existencia de alumno: " + codAlumno + " en matrícula", e);
+        }
     }
 }

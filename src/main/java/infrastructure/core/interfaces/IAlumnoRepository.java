@@ -11,4 +11,7 @@ public interface IAlumnoRepository {
 	Result<Boolean> dniExists(String dni);
 	Result<Alumno> editAlumno(Alumno alumno);
 	Result<Void> deleteAlumno(int codigo);
+	Result<Alumno> getAlumnoByCodigo(int codigo);
+	Result<Void> updateToMatriculado(int codigo);
+	Result<List<Alumno>> getAlumnosForMatricula();
 }

@@ -7,8 +7,19 @@ public class Matricula {
     private String fecha;
     private String hora;
 
+    public Matricula() {
+
+    }
+
     public Matricula(int numMatricula, int codAlumno, int codCurso, String fecha, String hora) {
         this.numMatricula = numMatricula;
+        this.codAlumno = codAlumno;
+        this.codCurso = codCurso;
+        this.fecha = fecha;
+        this.hora = hora;
+    }
+
+    public Matricula(int codAlumno, int codCurso, String fecha, String hora) {
         this.codAlumno = codAlumno;
         this.codCurso = codCurso;
         this.fecha = fecha;
