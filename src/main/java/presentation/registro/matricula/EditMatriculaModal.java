@@ -1,13 +1,14 @@
 package presentation.registro.matricula;
 
-import application.core.interfaces.IAlumno;
 import application.core.interfaces.ICurso;
 import application.core.interfaces.IMatricula;
 import global.Result;
-import infrastructure.core.models.Alumno;
 import infrastructure.core.models.Curso;
 import infrastructure.core.models.Matricula;
-import presentation.helper.*;
+import presentation.helper.ButtonHelper;
+import presentation.helper.ComboBoxHelper;
+import presentation.helper.ErrorHelper;
+import presentation.helper.GridBagHelper;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -17,28 +18,27 @@ import java.awt.event.KeyEvent;
 import java.io.Serial;
 import java.util.List;
 
-public class AddMatriculaModal extends JDialog {
+public class EditMatriculaModal extends JDialog {
     @Serial
     private static final long serialVersionUID = 1L;
 
     private final IMatricula _matriculaService;
-    private final IAlumno _alumnoService;
     private final ICurso _cursoService;
 
-    private JComboBox<Alumno> cmbAlumno;
     private JComboBox<Curso> cmbCurso;
     private JButton btnSave;
     private JButton btnCancel;
     private JLabel lblErrorMessage;
 
     private boolean dialogResult = false;
-    private Matricula createdMatricula = null;
+    private Matricula selectedMatricula = null;
+    private Matricula editedMatricula = null;
 
-    public AddMatriculaModal(Frame parent, IMatricula matriculaService, IAlumno alumnoService, ICurso cursoService) {
-        super(parent, "Agregar Nueva Matrícula", true);
+    public EditMatriculaModal(Frame parent, IMatricula matriculaService, ICurso cursoService, Matricula selectedMatricula) {
+        super(parent, "Editar Matrícula", true);
         this._matriculaService = matriculaService;
-        this._alumnoService = alumnoService;
         this._cursoService = cursoService;
+        this.selectedMatricula = selectedMatricula;
 
         initializeComponents();
         setupLayout();
@@ -51,13 +51,6 @@ public class AddMatriculaModal extends JDialog {
     }
 
     private void initializeComponents() {
-        Result<List<Alumno>> alumnosDisponibles = _alumnoService.getAlumnosForMatricula();
-
-        if (alumnosDisponibles.hasException()) {
-            ErrorHelper.showErrorMessage(lblErrorMessage, "Error inesperado en alumnos: " + alumnosDisponibles.getException().getMessage());
-            return;
-        }
-
         Result<List<Curso>> cursos = _cursoService.getAllCursos();
 
         if (cursos.hasException()) {
@@ -65,27 +58,24 @@ public class AddMatriculaModal extends JDialog {
             return;
         }
 
-        cmbAlumno = new JComboBox<>();
         cmbCurso = new JComboBox<>();
 
-        for (Alumno alumno : alumnosDisponibles.getValue()) {
-            cmbAlumno.addItem(alumno);
-        }
+        int actualIndex = 0;
+        for (int i = 0; i < cursos.getValue().size(); i++) {
+            Curso curso = cursos.getValue().get(i);
 
-        for (Curso curso : cursos.getValue()) {
+            if (curso.getCodCurso() == selectedMatricula.getCodCurso()) {
+                actualIndex = i;
+            }
+
             cmbCurso.addItem(curso);
         }
-
-        cmbAlumno.setRenderer(new ComboBoxHelper.GenericComboBoxRenderer<Alumno>(
-                alumno -> alumno.getCodAlumno() + " - " + alumno.getNombres() + " " + alumno.getApellidos()
-        ));
 
         cmbCurso.setRenderer(new ComboBoxHelper.GenericComboBoxRenderer<Curso>(
                 curso -> curso.getCodCurso() + " - " + curso.getAsignatura()
         ));
 
-        ComboBoxHelper.styleComboBox(cmbAlumno);
-        ComboBoxHelper.styleComboBox(cmbCurso);
+        ComboBoxHelper.styleComboBox(cmbCurso, actualIndex);
 
         btnSave = new JButton("Guardar");
         btnCancel = new JButton("Cancelar");
@@ -120,8 +110,7 @@ public class AddMatriculaModal extends JDialog {
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.WEST;
 
-        GridBagHelper.addLabelAndComponent(mainPanel, gbc, 1, "Alumno:", cmbAlumno);
-        GridBagHelper.addLabelAndComponent(mainPanel, gbc, 2, "Curso:", cmbCurso);
+        GridBagHelper.addLabelAndComponent(mainPanel, gbc, 1, "Curso:", cmbCurso);
 
         // Contenedor de errores
         JPanel errorContainer = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -156,7 +145,6 @@ public class AddMatriculaModal extends JDialog {
             }
         };
 
-        cmbAlumno.addKeyListener(enterKeyListener);
         cmbCurso.addKeyListener(enterKeyListener);
 
         KeyAdapter clearErrorListener = new KeyAdapter() {
@@ -166,19 +154,17 @@ public class AddMatriculaModal extends JDialog {
             }
         };
 
-        cmbAlumno.addKeyListener(clearErrorListener);
         cmbCurso.addKeyListener(clearErrorListener);
     }
 
     private void onSave() {
         try {
-            Alumno alumno = (Alumno) cmbAlumno.getSelectedItem();
             Curso curso = (Curso) cmbCurso.getSelectedItem();
 
-            Result<Matricula> result = _matriculaService.saveMatricula(alumno.getCodAlumno(), curso.getCodCurso());
+            Result<Matricula> result = _matriculaService.editMatricula(selectedMatricula.getNumMatricula(), curso.getCodCurso());
 
             if (result.isSuccess()) {
-                createdMatricula = result.getValue();
+                editedMatricula = result.getValue();
                 dialogResult = true;
                 dispose();
             } else {
@@ -199,7 +185,7 @@ public class AddMatriculaModal extends JDialog {
         return dialogResult;
     }
 
-    public Matricula getCreatedMatricula() {
-        return createdMatricula;
+    public Matricula getEditedMatricula() {
+        return editedMatricula;
     }
 }

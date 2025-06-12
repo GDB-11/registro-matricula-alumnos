@@ -11,4 +11,5 @@ public interface IMatriculaRepository {
     Result<Matricula> editMatricula(Matricula matricula);
     Result<Void> deleteMatricula(int numMatricula);
     Result<Boolean> alumnoMatriculado(int codAlumno);
+    Result<Matricula> getMatriculaByCodigo(int numMatricula);
 }

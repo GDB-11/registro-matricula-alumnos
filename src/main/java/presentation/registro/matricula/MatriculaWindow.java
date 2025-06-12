@@ -38,7 +38,7 @@ public class MatriculaWindow extends JFrame  {
         initializeComponents();
         setupLayout();
         setupEventHandlers();
-        //loadAlumnos();
+        loadMatriculas();
     }
 
     private void initializeComponents() {
@@ -87,10 +87,10 @@ public class MatriculaWindow extends JFrame  {
 
         // Columnas con botones
         matriculasTable.getColumnModel().getColumn(5).setCellRenderer(new ButtonHelper.ButtonRenderer("Editar", new Color(241, 196, 15)));
-        //matriculasTable.getColumnModel().getColumn(5).setCellEditor(new ButtonHelper.ButtonEditor("Editar", this::onEditAlumno));
+        matriculasTable.getColumnModel().getColumn(5).setCellEditor(new ButtonHelper.ButtonEditor("Editar", this::onEditMatricula));
 
         matriculasTable.getColumnModel().getColumn(6).setCellRenderer(new ButtonHelper.ButtonRenderer("Eliminar", new Color(231, 76, 60)));
-        //matriculasTable.getColumnModel().getColumn(6).setCellEditor(new ButtonHelper.ButtonEditor("Eliminar", this::onDeleteAlumno));
+        matriculasTable.getColumnModel().getColumn(6).setCellEditor(new ButtonHelper.ButtonEditor("Eliminar", this::onDeleteMatricula));
 
         // Desactivar la selección en la tabla
         matriculasTable.setSelectionModel(TableHelper.getNoSelectionModel());
@@ -161,6 +161,52 @@ public class MatriculaWindow extends JFrame  {
                         "Éxito",
                         JOptionPane.INFORMATION_MESSAGE);
             }
+        }
+    }
+
+    private void onEditMatricula(int rowIndex) {
+        Matricula selectedMatricula = tableModel.getMatriculaAt(rowIndex);
+
+        EditMatriculaModal modal = new EditMatriculaModal(this, _matriculaService, _cursoService, selectedMatricula);
+        modal.setVisible(true);
+
+        if (modal.getDialogResult()) {
+            Matricula editedMatricula = modal.getEditedMatricula();
+            loadMatriculas();
+
+            JOptionPane.showMessageDialog(this,
+                    "Matrícula " + editedMatricula.getNumMatricula() + " editada exitosamente:\n",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    private void onDeleteMatricula(int rowIndex) {
+        Matricula selectedMatricula = tableModel.getMatriculaAt(rowIndex);
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "¿Está seguro que desea cancelar la matrícula:\n" +
+                        selectedMatricula.getNumMatricula() + "?",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            Result<Void> eliminarMatricula = _matriculaService.deleteMatricula(selectedMatricula.getNumMatricula());
+
+            if (eliminarMatricula.isError()) {
+                JOptionPane.showMessageDialog(this,
+                        eliminarMatricula.getError(),
+                        "Error grave",
+                        JOptionPane.ERROR_MESSAGE);
+
+                return;
+            }
+
+            tableModel.removeMatricula(rowIndex);
+            JOptionPane.showMessageDialog(this,
+                    "matrícula " + selectedMatricula.getNumMatricula() + " cancelada correctamente",
+                    "Eliminación exitosa",
+                    JOptionPane.INFORMATION_MESSAGE);
         }
     }
 

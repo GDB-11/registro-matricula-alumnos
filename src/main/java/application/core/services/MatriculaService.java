@@ -5,6 +5,7 @@ import global.DateHelper;
 import global.Result;
 import infrastructure.core.interfaces.IAlumnoRepository;
 import infrastructure.core.interfaces.IMatriculaRepository;
+import infrastructure.core.models.Alumno;
 import infrastructure.core.models.Matricula;
 
 import java.util.Date;
@@ -55,7 +56,23 @@ public class MatriculaService implements IMatricula {
         return _matriculaRepository.editMatricula(matricula);
     }
 
-    /*public Result<Void> deleteMatricula(int numMatricula) {
+    public Result<Void> deleteMatricula(int numMatricula) {
+        Result<Matricula> matricula = _matriculaRepository.getMatriculaByCodigo(numMatricula);
 
-    }*/
+        if (matricula.isError()) {
+            return Result.error(matricula.getError());
+        }
+
+        Result<Alumno> alumno = _alumnoRepository.getAlumnoByCodigo(matricula.getValue().getCodAlumno());
+
+        if (alumno.isError()) {
+            return Result.error(alumno.getError());
+        }
+
+        if (alumno.getValue().getEstado() == 2) {
+            return Result.error("No se puede cancelar la matrícula de un alumno con estado 'retirado'");
+        }
+
+        return _matriculaRepository.deleteMatricula(numMatricula);
+    }
 }

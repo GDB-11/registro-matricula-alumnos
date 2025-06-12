@@ -74,15 +74,13 @@ public class MatriculaRepository implements IMatriculaRepository {
     public Result<Matricula> editMatricula(Matricula matricula) {
         String sql = """
                 UPDATE matricula
-                SET cod_curso = ?, fecha = ?, hora = ?
+                SET cod_curso = ?
                 WHERE num_matricula = ?
                 """;
 
         try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql, Statement.NO_GENERATED_KEYS)) {
             stmt.setInt(1, matricula.getCodCurso());
-            stmt.setString(2, matricula.getFecha());
-            stmt.setString(3, matricula.getHora());
-            stmt.setInt(4, matricula.getNumMatricula());
+            stmt.setInt(2, matricula.getNumMatricula());
 
             int affectedRows = stmt.executeUpdate();
 
@@ -129,6 +127,30 @@ public class MatriculaRepository implements IMatriculaRepository {
             }
         } catch (SQLException e) {
             return Result.error("Error verificando existencia de alumno: " + codAlumno + " en matrícula", e);
+        }
+    }
+
+    public Result<Matricula> getMatriculaByCodigo(int numMatricula) {
+        String sql = "SELECT * FROM matricula WHERE num_matricula = ?";
+
+        try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setInt(1, numMatricula);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    int codigo = rs.getInt("num_matricula");
+                    int codAlumno = rs.getInt("cod_alumno");
+                    int codCurso = rs.getInt("cod_curso");
+                    String fecha = rs.getString("fecha");
+                    String hora = rs.getString("hora");
+
+                    return Result.success(new Matricula(codigo, codAlumno, codCurso, fecha, hora));
+                } else {
+                    return Result.error("No se encontró la matrícula con código " + numMatricula);
+                }
+            }
+        } catch (SQLException e) {
+            return Result.error("Error obteniendo la matrícula con código " + numMatricula, e);
         }
     }
 }
