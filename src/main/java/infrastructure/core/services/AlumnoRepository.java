@@ -222,4 +222,41 @@ public class AlumnoRepository implements IAlumnoRepository {
 			return Result.error("Error obteniendo a todos los alumnos", e);
 		}
 	}
+
+	public Result<List<Alumno>> getAlumnosMatriculadosEnCurso(int codCurso) {
+		String sql = """
+				SELECT
+					a.*
+				FROM
+					alumno a
+					INNER JOIN matricula m ON a.cod_alumno = m.cod_alumno
+				WHERE
+					m.cod_curso = ?;
+				""";
+
+		List<Alumno> alumnos = new ArrayList<>();
+
+		try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql)) {
+			stmt.setInt(1, codCurso);
+
+			try (ResultSet rs = stmt.executeQuery()) {
+				while (rs.next()) {
+					int codigo = rs.getInt("cod_alumno");
+					String nombres = rs.getString("nombres");
+					String apellidos = rs.getString("apellidos");
+					String dni = rs.getString("dni");
+					int edad = rs.getInt("edad");
+					int celular = rs.getInt("celular");
+					int estado = rs.getInt("estado");
+
+					Alumno alumno = new Alumno(codigo, nombres, apellidos, dni, edad, celular, estado);
+					alumnos.add(alumno);
+				}
+
+				return Result.success(alumnos);
+			}
+		} catch (SQLException e) {
+			return Result.error("Error obteniendo a todos los alumnos", e);
+		}
+	}
 }

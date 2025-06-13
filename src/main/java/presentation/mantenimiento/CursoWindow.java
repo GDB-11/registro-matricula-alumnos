@@ -189,7 +189,7 @@ public class CursoWindow extends JFrame {
 
 			if (eliminarCurso.isError()) {
 				JOptionPane.showMessageDialog(this,
-					"Ocurrió un error al eliminar el curso",
+						eliminarCurso.getError(),
 					"Eror grave",
 					JOptionPane.ERROR_MESSAGE);
 
