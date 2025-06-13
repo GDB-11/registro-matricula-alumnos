@@ -131,4 +131,36 @@ public class CursoRepository implements ICursoRepository {
 			return Result.error("Excepción al eliminar el curso", e);
 		}
 	}
+
+    public Result<Curso> getCursoFromMatricula(int numMatricula) {
+        String sql = """
+				SELECT
+					c.*
+				FROM
+					curso c
+					INNER JOIN matricula m ON c.cod_curso = m.cod_curso
+				WHERE
+					m.num_matricula = ?;
+				""";
+
+        try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setInt(1, numMatricula);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    int codigo = rs.getInt("cod_curso");
+                    String asignatura = rs.getString("asignatura");
+                    int ciclo = rs.getInt("ciclo");
+                    int creditos = rs.getInt("creditos");
+                    int horas = rs.getInt("horas");
+
+                    return Result.success(new Curso(codigo, asignatura, ciclo, creditos, horas));
+                } else {
+                    return Result.error("No se encontró el curso en matrícula " + numMatricula);
+                }
+            }
+        } catch (SQLException e) {
+            return Result.error("Error obteniendo curso en matrícula " + numMatricula, e);
+        }
+    }
 }

@@ -1,12 +1,14 @@
 package main;
 
 import application.core.interfaces.IMatricula;
+import application.core.interfaces.IRetiro;
 import presentation.MainWindow;
 import presentation.mantenimiento.AlumnoWindow;
 import presentation.mantenimiento.CursoWindow;
 import application.core.interfaces.IAlumno;
 import application.core.interfaces.ICurso;
 import presentation.registro.matricula.MatriculaWindow;
+import presentation.registro.retiro.RetiroWindow;
 
 /**
  * Factory for creating windows with dependency injection
@@ -57,5 +59,16 @@ public class WindowFactory {
         ICurso cursoService = serviceContainer.getService(ICurso.class);
 
         return new MatriculaWindow(matriculaService, alumnoService, cursoService);
+    }
+
+    /**
+     * Crea la ventana RetiroWindow e inyecta dependencias
+     */
+    public RetiroWindow createRetiroWindow() {
+        IRetiro retiroService = serviceContainer.getService(IRetiro.class);
+        IMatricula matriculaService = serviceContainer.getService(IMatricula.class);
+        ICurso cursoService = serviceContainer.getService(ICurso.class);
+
+        return new RetiroWindow(retiroService, cursoService, matriculaService);
     }
 }

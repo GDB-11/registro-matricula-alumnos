@@ -13,6 +13,8 @@ public interface IAlumnoRepository {
 	Result<Void> deleteAlumno(int codigo);
 	Result<Alumno> getAlumnoByCodigo(int codigo);
 	Result<Void> updateToMatriculado(int codigo);
+	Result<Void> updateToRetirado(int codigo);
 	Result<List<Alumno>> getAlumnosForMatricula();
 	Result<List<Alumno>> getAlumnosMatriculadosEnCurso(int codCurso);
+	Result<Alumno> getAlumnoInMatricula(int numMatricula);
 }

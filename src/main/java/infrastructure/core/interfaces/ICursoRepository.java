@@ -11,4 +11,5 @@ public interface ICursoRepository {
     Result<Boolean> codigoExists(int codigo);
     Result<Curso> editCurso(Curso curso);
     Result<Void> deleteCurso(int codigo);
+    Result<Curso> getCursoFromMatricula(int numMatricula);
 }

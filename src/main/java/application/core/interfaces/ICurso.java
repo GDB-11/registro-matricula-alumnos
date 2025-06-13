@@ -11,4 +11,5 @@ public interface ICurso {
     Result<Curso> editCurso(int codigo, String asignatura, int ciclo, int creditos, int horas);
     Result<Void> deleteCurso(int codigo);
     Result<Boolean> codigoExists(int codigo);
+    Result<Curso> getCursoFromMatricula(int numMatricula);
 }

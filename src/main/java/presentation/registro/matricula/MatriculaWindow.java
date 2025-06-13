@@ -48,7 +48,7 @@ public class MatriculaWindow extends JFrame  {
         setBounds(100, 100, 1600, 750);
         WindowHelper.centerWindow(this);
 
-        // Initialize table model and table
+        // Initializar tabla y su modelo
         tableModel = new MatriculaWindow.MatriculaTableModel();
         matriculasTable = new JTable(tableModel);
         setupTable();

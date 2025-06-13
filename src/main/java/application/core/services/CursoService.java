@@ -52,4 +52,8 @@ public class CursoService implements ICurso {
     public Result<Boolean> codigoExists(int codigo) {
         return _cursoRepository.codigoExists(codigo);
     }
+
+    public Result<Curso> getCursoFromMatricula(int numMatricula) {
+        return _cursoRepository.getCursoFromMatricula(numMatricula);
+    }
 }

@@ -189,6 +189,28 @@ public class AlumnoRepository implements IAlumnoRepository {
 		}
 	}
 
+	public Result<Void> updateToRetirado(int codigo) {
+		String sql = """
+                UPDATE alumno
+                SET estado = 2
+                WHERE cod_alumno = ?
+                """;
+
+		try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql, Statement.NO_GENERATED_KEYS)) {
+			stmt.setInt(1, codigo);
+
+			int affectedRows = stmt.executeUpdate();
+
+			if (affectedRows > 0) {
+				return Result.success();
+			}
+
+			return Result.error("No se pudo cambiar el estado a 'matriculado' al alumno " + codigo);
+		} catch (SQLException e) {
+			return Result.error("Excepción al cambiar el estado a 'matriculado' al alumno " + codigo, e);
+		}
+	}
+
 	public Result<List<Alumno>> getAlumnosForMatricula() {
 		String sql = """
 				SELECT
@@ -257,6 +279,40 @@ public class AlumnoRepository implements IAlumnoRepository {
 			}
 		} catch (SQLException e) {
 			return Result.error("Error obteniendo a todos los alumnos", e);
+		}
+	}
+
+	public Result<Alumno> getAlumnoInMatricula(int numMatricula) {
+		String sql = """
+				SELECT
+					a.*
+				FROM
+					alumno a
+					INNER JOIN matricula m ON a.cod_alumno = m.cod_alumno
+				WHERE
+					m.num_matricula = ?;
+				""";
+
+		try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql)) {
+			stmt.setInt(1, numMatricula);
+
+			try (ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
+					int codigoAlumno = rs.getInt("cod_alumno");
+					String nombres = rs.getString("nombres");
+					String apellidos = rs.getString("apellidos");
+					String dni = rs.getString("dni");
+					int edad = rs.getInt("edad");
+					int celular = rs.getInt("celular");
+					int estado = rs.getInt("estado");
+
+					return Result.success(new Alumno(codigoAlumno, nombres, apellidos, dni, edad, celular, estado));
+				} else {
+					return Result.error("No se encontró el alumno en matrícula " + numMatricula);
+				}
+			}
+		} catch (SQLException e) {
+			return Result.error("Error obteniendo alumno en matrícula " + numMatricula, e);
 		}
 	}
 }

@@ -7,6 +7,7 @@ import presentation.helper.WindowHelper;
 import presentation.mantenimiento.AlumnoWindow;
 import presentation.mantenimiento.CursoWindow;
 import presentation.registro.matricula.MatriculaWindow;
+import presentation.registro.retiro.RetiroWindow;
 
 import java.io.Serial;
 
@@ -84,6 +85,7 @@ public class MainWindow extends JFrame {
         mntm_alumno.addActionListener(e -> openAlumnoWindow());
         mntm_curso.addActionListener(e -> openCursoWindow());
         mntm_matricula.addActionListener(e -> openMatriculaWindow());
+        mntm_retiro.addActionListener(e -> openRetiroWindow());
     }
 
     private void openAlumnoWindow() {
@@ -116,6 +118,17 @@ public class MainWindow extends JFrame {
             System.out.println("MatriculaWindow abierto");
         } catch (Exception e) {
             handleWindowError("MatriculaWindow", e);
+        }
+    }
+
+    private void openRetiroWindow() {
+        try {
+            RetiroWindow retiroWindow = windowFactory.createRetiroWindow();
+
+            retiroWindow.setVisible(true);
+            System.out.println("RetiroWindow abierto");
+        } catch (Exception e) {
+            handleWindowError("RetiroWindow", e);
         }
     }
 
