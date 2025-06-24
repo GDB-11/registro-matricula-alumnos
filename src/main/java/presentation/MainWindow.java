@@ -143,4 +143,14 @@ public class MainWindow extends JFrame {
             JOptionPane.ERROR_MESSAGE
         );
     }
+
+    private void openAlumnosCursosWindow() {
+        try {
+            var AlumnosCursosWindow = windowFactory.createAlumnosCursosWindow();
+            //alumnosCursosWindow.setVisible(true); corregir esta linea 
+            System.out.println("AlumnosCursosWindow abierto");
+        } catch (Exception e) {
+            handleWindowError("AlumnoCursosWindow", e);
+        }
+    }
 }

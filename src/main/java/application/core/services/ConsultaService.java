@@ -5,6 +5,7 @@ import global.Result;
 import infrastructure.core.interfaces.IAlumnoRepository;
 import infrastructure.core.interfaces.ICursoRepository;
 import infrastructure.core.interfaces.IMatriculaRepository;
+import infrastructure.core.interfaces.IRetiroRepository;
 import infrastructure.core.models.Alumno;
 import infrastructure.core.models.Curso;
 import infrastructure.core.models.Matricula;
@@ -14,14 +15,17 @@ public class ConsultaService implements IConsulta {
   private final IAlumnoRepository alumnoRepository;
   private final IMatriculaRepository matriculaRepository;
   private final ICursoRepository cursoRepository;
+  private final IRetiroRepository retiroRepository;
 
   public ConsultaService(
       IAlumnoRepository alumnoRepository,
       IMatriculaRepository matriculaRepository,
-      ICursoRepository cursoRepository) {
+      ICursoRepository cursoRepository,
+      IRetiroRepository retiroRepository) {
     this.alumnoRepository = alumnoRepository;
     this.matriculaRepository = matriculaRepository;
     this.cursoRepository = cursoRepository;
+    this.retiroRepository = retiroRepository;
   }
 
   @Override
