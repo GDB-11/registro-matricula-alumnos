@@ -111,33 +111,38 @@ public class AlumnosCursosWindow extends JFrame {
             int codAlumno = Integer.parseInt(txtCodigoAlumno.getText().trim());
 
             Result<Alumno> result = consultaService.consultarAlumnoPorCodigo(codAlumno);
-            if (result.isSuccess()) {
-                Alumno alumno = result.getValue();
-                String info = "Nombre: " + alumno.getNombres() + " " + alumno.getApellidos() +
-                        "\nDNI: " + alumno.getDni() +
-                        "\nEdad: " + alumno.getEdad() +
-                        "\nCelular: " + alumno.getCelular() +
-                        "\nEstado: " + getEstadoText(alumno.getEstado());
-
-                if (alumno.getEstado() == 1) {
-                    Result<Curso> cursoResult = consultaService.consultarCursoDeAlumno(codAlumno);
-                    if (cursoResult.isSuccess()) {
-                        Curso curso = cursoResult.getValue();
-                        info += "\n\n➡ Curso matriculado:\n" +
-                                "Código: " + curso.getCodCurso() +
-                                "\nAsignatura: " + curso.getAsignatura() +
-                                "\nCiclo: " + curso.getCiclo() +
-                                "\nCréditos: " + curso.getCreditos() +
-                                "\nHoras: " + curso.getHoras();
-                    } else {
-                        info += "\n\n(Alumno matriculado pero no se encontró el curso)";
-                    }
-                }
-
-                txtResultadoAlumno.setText(info);
-            } else {
+            if (!result.isSuccess()) {
                 txtResultadoAlumno.setText("⚠ " + result.getError());
+                return;
             }
+
+            Alumno alumno = result.getValue();
+            StringBuilder info = new StringBuilder();
+
+            info.append("Nombre: ").append(alumno.getNombres()).append(" ").append(alumno.getApellidos())
+                    .append("\nDNI: ").append(alumno.getDni())
+                    .append("\nEdad: ").append(alumno.getEdad())
+                    .append("\nCelular: ").append(alumno.getCelular())
+                    .append("\nEstado: ").append(getEstadoText(alumno.getEstado()));
+
+            if (alumno.getEstado() == 1) {
+                Result<Curso> cursoResult = consultaService.consultarCursoDeAlumno(codAlumno);
+                if (cursoResult.isSuccess()) {
+                    Curso curso = cursoResult.getValue();
+                    info.append("\n\n➡ Curso matriculado:")
+                            .append("\nCódigo: ").append(curso.getCodCurso())
+                            .append("\nAsignatura: ").append(curso.getAsignatura())
+                            .append("\nCiclo: ").append(curso.getCiclo())
+                            .append("\nCréditos: ").append(curso.getCreditos())
+                            .append("\nHoras: ").append(curso.getHoras());
+                } else {
+                    info.append("\n\n⚠ Matriculado, pero no se pudo obtener información del curso.")
+                            .append("\nMotivo: ").append(cursoResult.getError());
+                }
+            }
+
+            txtResultadoAlumno.setText(info.toString());
+
         } catch (NumberFormatException ex) {
             txtResultadoAlumno.setText("⚠ El código debe ser un número entero.");
         }

@@ -4,6 +4,7 @@ import application.core.interfaces.IMatricula;
 import application.core.interfaces.IRetiro;
 import presentation.MainWindow;
 import presentation.consultas.AlumnosCursosWindow;
+import presentation.consultas.MatriculasRetirosWindow;
 import presentation.mantenimiento.AlumnoWindow;
 import presentation.mantenimiento.CursoWindow;
 import application.core.interfaces.IAlumno;
@@ -77,5 +78,13 @@ public class WindowFactory {
     public AlumnosCursosWindow createAlumnosCursosWindow() {
         IConsulta consultaService = serviceContainer.getService(IConsulta.class);
         return new AlumnosCursosWindow(consultaService);
+    }
+
+      /**
+     * Crea la ventana MatriculaRetirosWindow
+     */
+    public MatriculasRetirosWindow createMatriculasRetirosWindow() {
+        IConsulta consultaService = serviceContainer.getService(IConsulta.class);
+        return new MatriculasRetirosWindow(consultaService);
     }
 }
