@@ -9,4 +9,5 @@ public interface IConsulta {
   Result<Curso> consultarCursoDeAlumno(int codAlumno);
   Result<String> consultarDatosDeMatricula(int numMatricula);
   Result<String> consultarDatosDeRetiro(int numRetiro);
+  Result<Curso> consultarCursoPorCodigo(int codCurso);
 }

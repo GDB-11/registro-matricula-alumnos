@@ -152,7 +152,7 @@ public class AlumnosCursosWindow extends JFrame {
         try {
             int codCurso = Integer.parseInt(txtCodigoCurso.getText().trim());
 
-            Result<Curso> result = consultaService.consultarCursoDeAlumno(codCurso);
+            Result<Curso> result = consultaService.consultarCursoPorCodigo(codCurso);
             if (result.isSuccess()) {
                 Curso curso = result.getValue();
                 String info = "Código: " + curso.getCodCurso() +

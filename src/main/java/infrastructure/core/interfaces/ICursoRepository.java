@@ -12,4 +12,5 @@ public interface ICursoRepository {
     Result<Curso> editCurso(Curso curso);
     Result<Void> deleteCurso(int codigo);
     Result<Curso> getCursoFromMatricula(int numMatricula);
+    Result<Curso> getCursoByCodigo(int codCurso);
 }

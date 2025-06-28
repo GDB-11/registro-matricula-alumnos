@@ -43,7 +43,7 @@ public class ConsultaService implements IConsulta {
     Result<Alumno> resultadoAlumno = alumnoRepository.getAlumnoByCodigo(codAlumno);
 
     if (!resultadoAlumno.isSuccess()) {
-      return Result.error("No se encontró el alumno con código: " + codAlumno);
+      return Result.error("No se encontró el curso con codigo: " + codAlumno);
     }
 
     Alumno alumno = resultadoAlumno.getValue();
@@ -85,24 +85,25 @@ public class ConsultaService implements IConsulta {
     int codCurso = matricula.getCodCurso();
 
     Result<Alumno> resultAlumno = alumnoRepository.getAlumnoByCodigo(codAlumno);
-    if(!resultAlumno.isSuccess()) {
+    if (!resultAlumno.isSuccess()) {
       return Result.error("No se encontró el alumno con código: " + codAlumno);
     }
 
     Result<Curso> resultCurso = cursoRepository.getCursoFromMatricula(matricula.getNumMatricula());
-    if(!resultCurso.isSuccess()) {
-      return Result.error("No se encontró el curso con el código: "+codCurso);
+    if (!resultCurso.isSuccess()) {
+      return Result.error("No se encontró el curso con el código: " + codCurso);
     }
     Alumno alumno = resultAlumno.getValue();
     Curso curso = resultCurso.getValue();
 
     String datos = "Información de matrícula\n"
-                  + "---------------------------\n"
-                  + "Alumno: " + alumno.getNombres() + " " + alumno.getApellidos() + "\n"
-                  + "Curso: " + curso.getAsignatura() + " (Codigo: " + curso.getCodCurso() + ")\n"
-                  + "Fecha: " + matricula.getFecha() + " - " + matricula.getHora();
+        + "---------------------------\n"
+        + "Alumno: " + alumno.getNombres() + " " + alumno.getApellidos() + "\n"
+        + "Curso: " + curso.getAsignatura() + " (Codigo: " + curso.getCodCurso() + ")\n"
+        + "Fecha: " + matricula.getFecha() + " - " + matricula.getHora();
     return Result.success(datos);
   }
+
   @Override
   public Result<String> consultarDatosDeRetiro(int numRetiro) {
     Result<Retiro> resultRetiro = retiroRepository.getRetiroByCodigo(numRetiro);
@@ -140,5 +141,11 @@ public class ConsultaService implements IConsulta {
                  + "Fecha de retiro: " + retiro.getFecha() + " - " + retiro.getHora();
 
     return Result.success(datos);
+
+  }
+
+  @Override
+  public Result<Curso> consultarCursoPorCodigo(int codCurso) {
+    return cursoRepository.getCursoByCodigo(codCurso);
   }
 }

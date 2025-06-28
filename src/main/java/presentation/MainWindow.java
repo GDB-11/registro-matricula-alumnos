@@ -24,7 +24,7 @@ public class MainWindow extends JFrame {
         this.windowFactory = windowFactory;
         initializeComponents();
         //solo para pruebas
-        imprimirAlumnosDesdeRepositorio();
+        //imprimirAlumnosDesdeRepositorio();
     }
 
     private void initializeComponents() {
@@ -189,7 +189,7 @@ public class MainWindow extends JFrame {
         }
     }
     //Metodo de prueba para debugg
-    private void imprimirAlumnosDesdeRepositorio() {
+/*     private void imprimirAlumnosDesdeRepositorio() {
         IAlumnoRepository alumnoRepo = windowFactory
                 .getServiceContainer()
                 .getService(IAlumnoRepository.class);
@@ -204,6 +204,5 @@ public class MainWindow extends JFrame {
         } else {
             System.out.println("❌ Error al obtener alumnos: " + result.getError());
         }
-    }
-
+    } */
 }
