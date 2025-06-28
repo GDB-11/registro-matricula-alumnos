@@ -108,7 +108,7 @@ public class ConsultaService implements IConsulta {
   public Result<String> consultarDatosDeRetiro(int numRetiro) {
     Result<Retiro> resultRetiro = retiroRepository.getRetiroByCodigo(numRetiro);
     if (!resultRetiro.isSuccess()) {
-      return Result.error("Retirno no encontrado con el número: " + numRetiro);
+      return Result.error("Retiro no encontrado con el número: " + numRetiro);
     }
 
     Retiro retiro = resultRetiro.getValue();
