@@ -163,4 +163,27 @@ public class CursoRepository implements ICursoRepository {
             return Result.error("Error obteniendo curso en matrícula " + numMatricula, e);
         }
     }
+
+    public Result<Curso> getCursoByCodigo(int codCurso) {
+    String sql = "SELECT * FROM curso WHERE cod_curso = ?";
+    try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql)) {
+        stmt.setInt(1, codCurso);
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            Curso curso = new Curso(
+                rs.getInt("cod_curso"),
+                rs.getString("asignatura"),
+                rs.getInt("ciclo"),
+                rs.getInt("creditos"),
+                rs.getInt("horas")
+            );
+            return Result.success(curso);
+        } else {
+            return Result.error("Curso no encontrado.");
+        }
+    } catch (SQLException e) {
+        return Result.error("Error al buscar curso", e);
+    }
+}
+
 }

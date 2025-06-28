@@ -25,7 +25,7 @@ public class MatriculaRepository implements IMatriculaRepository {
         List<Matricula> matriculas = new ArrayList<>();
 
         try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+                ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 int numMatricula = rs.getInt("num_matricula");
                 int codAlumno = rs.getInt("cod_alumno");
@@ -48,7 +48,8 @@ public class MatriculaRepository implements IMatriculaRepository {
                 VALUES (?, ?, ?, ?)
                 """;
 
-        try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql,
+                Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, matricula.getCodAlumno());
             stmt.setInt(2, matricula.getCodCurso());
             stmt.setString(3, matricula.getFecha());
@@ -78,7 +79,8 @@ public class MatriculaRepository implements IMatriculaRepository {
                 WHERE num_matricula = ?
                 """;
 
-        try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql, Statement.NO_GENERATED_KEYS)) {
+        try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql,
+                Statement.NO_GENERATED_KEYS)) {
             stmt.setInt(1, matricula.getCodCurso());
             stmt.setInt(2, matricula.getNumMatricula());
 
@@ -97,7 +99,8 @@ public class MatriculaRepository implements IMatriculaRepository {
     public Result<Void> deleteMatricula(int numMatricula) {
         String sql = "DELETE FROM matricula WHERE num_matricula = ?";
 
-        try(PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql, Statement.NO_GENERATED_KEYS)) {
+        try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql,
+                Statement.NO_GENERATED_KEYS)) {
             stmt.setInt(1, numMatricula);
 
             int affectedRows = stmt.executeUpdate();
@@ -151,6 +154,28 @@ public class MatriculaRepository implements IMatriculaRepository {
             }
         } catch (SQLException e) {
             return Result.error("Error obteniendo la matrícula con código " + numMatricula, e);
+        }
+    }
+
+    public Result<Matricula> getMatriculaByCodAlumno(int codAlumno) {
+        String sql = "SELECT * FROM matricula WHERE cod_alumno = ? LIMIT 1";
+        try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setInt(1, codAlumno);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    int numMatricula = rs.getInt("num_matricula");
+                    int codCurso = rs.getInt("cod_curso");
+                    String fecha = rs.getString("fecha");
+                    String hora = rs.getString("hora");
+
+                    return Result.success(new Matricula(numMatricula, codAlumno, codCurso, fecha, hora));
+                } else {
+                    return Result.error("No se encontró matrícula para el alumno");
+                }
+            }
+        } catch (SQLException e) {
+            return Result.error("Error buscando matrícula del alumno", e);
         }
     }
 }
