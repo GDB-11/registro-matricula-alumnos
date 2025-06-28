@@ -122,7 +122,7 @@ public class ConsultaService implements IConsulta {
 
     Result<Alumno> resultAlumno = alumnoRepository.getAlumnoByCodigo(matricula.getCodAlumno());
     if(!resultAlumno.isSuccess()) {
-      return Result.error("Alumno no encontrado con el código: " + matricula.getCodAlumno())
+      return Result.error("Alumno no encontrado con el código: " + matricula.getCodAlumno());
     }
 
     Result<Curso> resultCurso = cursoRepository.getCursoFromMatricula(matricula.getNumMatricula());

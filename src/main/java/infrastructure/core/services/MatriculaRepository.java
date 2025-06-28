@@ -157,7 +157,7 @@ public class MatriculaRepository implements IMatriculaRepository {
         }
     }
 
-    public Result<Matricula> getMatriculaByCodalumno(int codAlumno) {
+    public Result<Matricula> getMatriculaByCodAlumno(int codAlumno) {
         String sql = "SELECT * FROM matricula WHERE cod_alumno = ? LIMIT 1";
         try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql)) {
             stmt.setInt(1, codAlumno);
