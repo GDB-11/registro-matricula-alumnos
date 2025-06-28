@@ -12,6 +12,7 @@ import presentation.mantenimiento.CursoWindow;
 import presentation.registro.matricula.MatriculaWindow;
 import presentation.registro.retiro.RetiroWindow;
 
+import java.awt.*;
 import java.io.Serial;
 
 public class MainWindow extends JFrame {
@@ -85,7 +86,25 @@ public class MainWindow extends JFrame {
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
+      
+        // Imagen de fondo
+        try {
+            ImageIcon backgroundIcon = new ImageIcon("red-dev-logo.png");
+            JLabel backgroundLabel = new JLabel(backgroundIcon);
+            backgroundLabel.setBorder(new EmptyBorder(5, 5, 5, 5));
+            backgroundLabel.setLayout(null);
+            setContentPane(backgroundLabel);
 
+            System.out.println("Background image loaded successfully");
+        } catch (Exception e) {
+            System.err.println("Error loading background image: " + e.getMessage());
+            JPanel contentPaneExc = new JPanel();
+            contentPaneExc.setBorder(new EmptyBorder(5, 5, 5, 5));
+            contentPaneExc.setLayout(null);
+            contentPaneExc.setBackground(new Color(240, 240, 240));
+            setContentPane(contentPaneExc);
+        }
+      
         // Agregar eventos click para abrir ventanas secundarias
         mntm_alumno.addActionListener(e -> openAlumnoWindow());
         mntm_curso.addActionListener(e -> openCursoWindow());
