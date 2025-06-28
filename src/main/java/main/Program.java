@@ -19,6 +19,8 @@ import infrastructure.core.services.MatriculaRepository;
 import infrastructure.core.services.RetiroRepository;
 import presentation.MainWindow;
 
+import javax.swing.*;
+
 /**
  * Orquestador de toda la aplicación
  */
@@ -93,9 +95,12 @@ public class Program {
                 
                 // Tema visual
                 FlatDarkLaf.setup();
-                
+
+                ImageIcon icon = new ImageIcon("red-dev-simplified-logo.png");
+
                 MainWindow mainWindow = windowFactory.createMainWindow();
                 mainWindow.setVisible(true);
+                mainWindow.setIconImage(icon.getImage());
                 
                 System.out.println("La aplicación se inició correctamente");
             } catch (Exception e) {
