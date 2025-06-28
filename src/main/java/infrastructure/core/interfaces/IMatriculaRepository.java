@@ -12,4 +12,5 @@ public interface IMatriculaRepository {
     Result<Void> deleteMatricula(int numMatricula);
     Result<Boolean> alumnoMatriculado(int codAlumno);
     Result<Matricula> getMatriculaByCodigo(int numMatricula);
+    Result<Matricula> getMatriculaByCodAlumno(int codAlumno);
 }
