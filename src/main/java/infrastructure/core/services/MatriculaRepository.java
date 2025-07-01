@@ -39,6 +39,8 @@ public class MatriculaRepository implements IMatriculaRepository {
             return Result.success(matriculas);
         } catch (SQLException e) {
             return Result.error("Error obteniendo todas los matrículas", e);
+        } finally {
+            _databaseManager.closeConnection();
         }
     }
 
@@ -69,6 +71,8 @@ public class MatriculaRepository implements IMatriculaRepository {
             return Result.error("No se pudo insertar la matrícula");
         } catch (SQLException e) {
             return Result.error("Excepción al insertar la matrícula", e);
+        } finally {
+            _databaseManager.closeConnection();
         }
     }
 
@@ -93,6 +97,8 @@ public class MatriculaRepository implements IMatriculaRepository {
             return Result.error("No se pudo editar la matrícula");
         } catch (SQLException e) {
             return Result.error("Excepción al editar la matrícula", e);
+        } finally {
+            _databaseManager.closeConnection();
         }
     }
 
@@ -112,6 +118,8 @@ public class MatriculaRepository implements IMatriculaRepository {
             return Result.error("No se pudo eliminar la matrícula");
         } catch (SQLException e) {
             return Result.error("Excepción al eliminar la matrícula", e);
+        } finally {
+            _databaseManager.closeConnection();
         }
     }
 
@@ -130,6 +138,8 @@ public class MatriculaRepository implements IMatriculaRepository {
             }
         } catch (SQLException e) {
             return Result.error("Error verificando existencia de alumno: " + codAlumno + " en matrícula", e);
+        } finally {
+            _databaseManager.closeConnection();
         }
     }
 
@@ -154,6 +164,8 @@ public class MatriculaRepository implements IMatriculaRepository {
             }
         } catch (SQLException e) {
             return Result.error("Error obteniendo la matrícula con código " + numMatricula, e);
+        } finally {
+            _databaseManager.closeConnection();
         }
     }
 
@@ -176,6 +188,8 @@ public class MatriculaRepository implements IMatriculaRepository {
             }
         } catch (SQLException e) {
             return Result.error("Error buscando matrícula del alumno", e);
+        } finally {
+            _databaseManager.closeConnection();
         }
     }
 }

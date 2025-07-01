@@ -38,6 +38,8 @@ public class RetiroRepository implements IRetiroRepository {
             return Result.success(retiros);
         } catch (SQLException e) {
             return Result.error("Error obteniendo todas los retiros", e);
+        } finally {
+            _databaseManager.closeConnection();
         }
     }
 
@@ -66,6 +68,8 @@ public class RetiroRepository implements IRetiroRepository {
             return Result.error("No se pudo insertar el retiro");
         } catch (SQLException e) {
             return Result.error("Excepción al insertar el retiro", e);
+        } finally {
+            _databaseManager.closeConnection();
         }
     }
 
@@ -89,6 +93,8 @@ public class RetiroRepository implements IRetiroRepository {
             }
         } catch (SQLException e) {
             return Result.error("Error obteniendo retiro con código " + numRetiro, e);
+        } finally {
+            _databaseManager.closeConnection();
         }
     }
 
@@ -107,6 +113,8 @@ public class RetiroRepository implements IRetiroRepository {
             return Result.error("No se pudo cancelar el retiro");
         } catch (SQLException e) {
             return Result.error("Excepción al cancelar el retiro", e);
+        } finally {
+            _databaseManager.closeConnection();
         }
     }
 }

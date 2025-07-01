@@ -15,6 +15,18 @@ public class ValidationHelper {
         return "áéíóúñÁÉÍÓÚÑ".indexOf(c) != -1;
     }
 
+    public static boolean isAsciiSpanishNumbersAndSymbolsOnly(String text) {
+        return text.chars().allMatch(c ->
+                (c < 128 && (Character.isLetter(c) || Character.isWhitespace(c) || Character.isDigit(c))) ||
+                        isSpanishAccentedChar(c) ||
+                        isAllowedSymbol(c)
+        );
+    }
+
+    private static boolean isAllowedSymbol(int c) {
+        return "#$%+-*/.".indexOf(c) != -1;
+    }
+
     public static class DigitsOnlyFilter extends DocumentFilter {
         private final int maxLength;
 

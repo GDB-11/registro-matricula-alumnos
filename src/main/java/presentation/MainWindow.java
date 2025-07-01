@@ -188,21 +188,4 @@ public class MainWindow extends JFrame {
             handleWindowError("MatriculasRetirosWindow", e);
         }
     }
-    //Metodo de prueba para debugg
-/*     private void imprimirAlumnosDesdeRepositorio() {
-        IAlumnoRepository alumnoRepo = windowFactory
-                .getServiceContainer()
-                .getService(IAlumnoRepository.class);
-
-        var result = alumnoRepo.getAllAlumnos();
-        if (result.isSuccess()) {
-            System.out.println("📋 Lista de alumnos encontrados en BD:");
-            for (var a : result.getValue()) {
-                System.out.printf("ID: %d | Nombre: %s %s | Estado: %d%n",
-                        a.getCodAlumno(), a.getNombres(), a.getApellidos(), a.getEstado());
-            }
-        } else {
-            System.out.println("❌ Error al obtener alumnos: " + result.getError());
-        }
-    } */
 }

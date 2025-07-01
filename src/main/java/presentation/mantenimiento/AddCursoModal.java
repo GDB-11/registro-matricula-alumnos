@@ -178,14 +178,14 @@ public class AddCursoModal extends JDialog {
 		DocumentFilter asciiFilter = new DocumentFilter() {
 			@Override
 			public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
-				if (ValidationHelper.isAsciiAndSpanishOnly(string)) {
+				if (ValidationHelper.isAsciiSpanishNumbersAndSymbolsOnly(string)) {
 					super.insertString(fb, offset, string, attr);
 				}
 			}
 
 			@Override
 			public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
-				if (ValidationHelper.isAsciiAndSpanishOnly(text)) {
+				if (ValidationHelper.isAsciiSpanishNumbersAndSymbolsOnly(text)) {
 					super.replace(fb, offset, length, text, attrs);
 				}
 			}
