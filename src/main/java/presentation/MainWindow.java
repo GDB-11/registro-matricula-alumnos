@@ -11,6 +11,7 @@ import presentation.mantenimiento.AlumnoWindow;
 import presentation.mantenimiento.CursoWindow;
 import presentation.registro.matricula.MatriculaWindow;
 import presentation.registro.retiro.RetiroWindow;
+import presentation.reporte.ReportesWindow;
 
 import java.awt.*;
 import java.io.Serial;
@@ -72,14 +73,8 @@ public class MainWindow extends JFrame {
         JMenu mn_reporte = new JMenu("Reporte");
         menuBar_mainWindow.add(mn_reporte);
 
-        JMenuItem mntm_alumnosMatriculaPendiente = new JMenuItem("Alumnos con matrícula pendiente");
-        mn_reporte.add(mntm_alumnosMatriculaPendiente);
-
-        JMenuItem mntm_alumnosMatriculaVigente = new JMenuItem("Alumnos con matrícula vigente");
-        mn_reporte.add(mntm_alumnosMatriculaVigente);
-
-        JMenuItem mntm_alumnosMatriculadosPorCurso = new JMenuItem("Alumnos matriculados por curso");
-        mn_reporte.add(mntm_alumnosMatriculadosPorCurso);
+        JMenuItem mntm_reportes = new JMenuItem("Reportes");
+        mn_reporte.add(mntm_reportes);
 
         // Content panel
         JPanel contentPane = new JPanel();
@@ -112,6 +107,7 @@ public class MainWindow extends JFrame {
         mntm_retiro.addActionListener(e -> openRetiroWindow());
         mntm_matriculasRetiros.addActionListener(e -> openMatriculasRetirosWindow());
         mntm_alumnosCursos.addActionListener(e -> openAlumnosCursosWindow());
+        mntm_reportes.addActionListener(e -> openReportesWindow());
     }
 
     private void openAlumnoWindow() {
@@ -186,6 +182,16 @@ public class MainWindow extends JFrame {
             System.out.println("MAtriculasRetirosWindow Abierto");
         } catch (Exception e) {
             handleWindowError("MatriculasRetirosWindow", e);
+        }
+    }
+
+    private void openReportesWindow() {
+        try {
+            ReportesWindow window = windowFactory.createReportesWindow();
+            window.setVisible(true);
+            System.out.println("ReportesWindow Abierto");
+        } catch (Exception e) {
+            handleWindowError("ReportesWindow", e);
         }
     }
 }

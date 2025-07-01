@@ -12,6 +12,7 @@ import application.core.interfaces.IConsulta;
 import application.core.interfaces.ICurso;
 import presentation.registro.matricula.MatriculaWindow;
 import presentation.registro.retiro.RetiroWindow;
+import presentation.reporte.ReportesWindow;
 
 /**
  * Factory for creating windows with dependency injection
@@ -80,11 +81,22 @@ public class WindowFactory {
         return new AlumnosCursosWindow(consultaService);
     }
 
-      /**
+    /**
      * Crea la ventana MatriculaRetirosWindow
      */
     public MatriculasRetirosWindow createMatriculasRetirosWindow() {
         IConsulta consultaService = serviceContainer.getService(IConsulta.class);
         return new MatriculasRetirosWindow(consultaService);
+    }
+
+    /**
+     * Crea la ventana ReportesWindow e inyecta dependencias
+     */
+    public ReportesWindow createReportesWindow() {
+        IMatricula matriculaService = serviceContainer.getService(IMatricula.class);
+        IAlumno alumnoService = serviceContainer.getService(IAlumno.class);
+        ICurso cursoService = serviceContainer.getService(ICurso.class);
+
+        return new ReportesWindow(matriculaService, alumnoService, cursoService);
     }
 }
