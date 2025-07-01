@@ -4,6 +4,10 @@ import application.core.interfaces.IConsulta;
 import global.Result;
 import infrastructure.core.models.Alumno;
 import infrastructure.core.models.Curso;
+import presentation.helper.ButtonHelper;
+import presentation.helper.ErrorHelper;
+import presentation.helper.GridBagHelper;
+import presentation.helper.TextFieldHelper;
 import presentation.helper.WindowHelper;
 
 import javax.swing.*;
@@ -15,7 +19,7 @@ public class AlumnosCursosWindow extends JFrame {
     // Alumno
     private JTextField txtCodigoAlumno;
     private JButton btnBuscarAlumno;
-    private JTextArea txtResultadoAlumno;
+    private JLabel lblErrorMessage;
 
     // Curso
     private JTextField txtCodigoCurso;
@@ -31,143 +35,149 @@ public class AlumnosCursosWindow extends JFrame {
     }
 
     private void initializeComponents() {
-        setResizable(false);
-        setTitle("Consultas de Alumnos y Cursos");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(600, 450);
-        WindowHelper.centerWindow(this);
-
-        // Alumno
         txtCodigoAlumno = new JTextField(10);
-        btnBuscarAlumno = new JButton("🔍 Buscar Alumno");
-        txtResultadoAlumno = new JTextArea(7, 40);
-        txtResultadoAlumno.setEditable(false);
-        txtResultadoAlumno.setLineWrap(true);
-        txtResultadoAlumno.setWrapStyleWord(true);
+        TextFieldHelper.styleTextField(txtCodigoAlumno);
+        btnBuscarAlumno = new JButton("Buscar");
+        ButtonHelper.styleButton(btnBuscarAlumno, new Color(52, 152, 219));
 
-        // Curso
         txtCodigoCurso = new JTextField(10);
-        btnBuscarCurso = new JButton("🔍 Buscar Curso");
-        txtResultadoCurso = new JTextArea(7, 40);
-        txtResultadoCurso.setEditable(false);
-        txtResultadoCurso.setLineWrap(true);
-        txtResultadoCurso.setWrapStyleWord(true);
+        TextFieldHelper.styleTextField(txtCodigoCurso);
+        btnBuscarCurso = new JButton("Buscar");
+        ButtonHelper.styleButton(btnBuscarCurso, new Color(52, 152, 219));
+
+        lblErrorMessage = new JLabel();
+        lblErrorMessage.setHorizontalAlignment(SwingConstants.CENTER);
+        lblErrorMessage.setForeground(Color.RED);
+
+        setTitle("Consulta de Alumnos y Cursos");
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        setSize(700, 400);
+        setResizable(false);
+        setLocationRelativeTo(null);
     }
 
     private void setupLayout() {
-        JTabbedPane tabbedPane = new JTabbedPane();
+        setLayout(new BorderLayout());
 
-        tabbedPane.addTab("Alumno", createAlumnoPanel());
-        tabbedPane.addTab("Curso", createCursoPanel());
+        // Panel para busqueda de alumno
+        JPanel alumnoPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbcAlumno = new GridBagConstraints();
+        gbcAlumno.insets = new Insets(8, 8, 8, 8);
+        gbcAlumno.anchor = GridBagConstraints.WEST;
 
-        setContentPane(tabbedPane);
-    }
+        gbcAlumno.fill = GridBagConstraints.HORIZONTAL;
+        gbcAlumno.weightx = 1.0;
 
-    private JPanel createAlumnoPanel() {
-        JPanel panel = new JPanel(new BorderLayout(10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        GridBagHelper.addLabelAndComponent(alumnoPanel, gbcAlumno, 0, "Código de alumno:", txtCodigoAlumno);
 
-        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        searchPanel.setBorder(BorderFactory.createTitledBorder("Buscar Alumno por Código"));
-        searchPanel.add(new JLabel("Código de Alumno:"));
-        searchPanel.add(txtCodigoAlumno);
-        searchPanel.add(btnBuscarAlumno);
+        gbcAlumno.gridx = 2;
+        gbcAlumno.gridy = 0;
+        gbcAlumno.gridwidth = 1;
+        alumnoPanel.add(btnBuscarAlumno, gbcAlumno);
 
-        JScrollPane resultScroll = new JScrollPane(txtResultadoAlumno);
-        resultScroll.setBorder(BorderFactory.createTitledBorder("Resultado de la Búsqueda"));
+        // Panel para busqueda de curso
 
-        panel.add(searchPanel, BorderLayout.NORTH);
-        panel.add(resultScroll, BorderLayout.CENTER);
+        JPanel cursoPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbcCurso = new GridBagConstraints();
+        gbcCurso.insets = new Insets(8, 8, 8, 8);
+        gbcCurso.anchor = GridBagConstraints.WEST;
 
-        return panel;
-    }
+        gbcCurso.fill = GridBagConstraints.HORIZONTAL;
+        gbcCurso.weightx = 1.0; // Esto permite que el campo se expanda con el panel
 
-    private JPanel createCursoPanel() {
-        JPanel panel = new JPanel(new BorderLayout(10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        GridBagHelper.addLabelAndComponent(cursoPanel, gbcCurso, 0, "Código de Curso:", txtCodigoCurso);
 
-        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        searchPanel.setBorder(BorderFactory.createTitledBorder("Buscar Curso por Código"));
-        searchPanel.add(new JLabel("Código de Curso:"));
-        searchPanel.add(txtCodigoCurso);
-        searchPanel.add(btnBuscarCurso);
+        gbcCurso.gridx = 2;
+        gbcCurso.gridy = 0;
+        gbcAlumno.gridwidth = 1;
+        cursoPanel.add(btnBuscarCurso, gbcCurso);
 
-        JScrollPane resultScroll = new JScrollPane(txtResultadoCurso);
-        resultScroll.setBorder(BorderFactory.createTitledBorder("Resultado de la Búsqueda"));
+        // Panel de errores
+        JPanel errorPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        errorPanel.add(lblErrorMessage);
 
-        panel.add(searchPanel, BorderLayout.NORTH);
-        panel.add(resultScroll, BorderLayout.CENTER);
+        // Contenedor principal
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));
+        mainPanel.add(alumnoPanel);
+        mainPanel.add(Box.createVerticalStrut(10));
+        mainPanel.add(cursoPanel);
+        mainPanel.add(Box.createVerticalStrut(10));
+        mainPanel.add(errorPanel);
 
-        return panel;
+        setContentPane(mainPanel);
     }
 
     private void setupEvents() {
-        btnBuscarAlumno.addActionListener(e -> buscarAlumno());
-        btnBuscarCurso.addActionListener(e -> buscarCurso());
+        btnBuscarAlumno.addActionListener(e -> onBuscarAlumno());
+        btnBuscarCurso.addActionListener(e -> onBuscarCurso());
     }
 
-    private void buscarAlumno() {
-        try {
-            int codAlumno = Integer.parseInt(txtCodigoAlumno.getText().trim());
+    private void onBuscarAlumno() {
+        ErrorHelper.clearErrorMessage(lblErrorMessage);
+        String textoCodigo = txtCodigoAlumno.getText().trim();
 
-            Result<Alumno> result = consultaService.consultarAlumnoPorCodigo(codAlumno);
-            if (!result.isSuccess()) {
-                txtResultadoAlumno.setText("⚠ " + result.getError());
+        if (textoCodigo.isEmpty()) {
+            ErrorHelper.showErrorMessage(lblErrorMessage, "Debe ingresar un codigo de alumno");
+            return;
+        }
+
+        try {
+            int codAlumno = Integer.parseInt(textoCodigo);
+            Result<Alumno> resultAlumno = consultaService.consultarAlumnoPorCodigo(codAlumno);
+
+            if (resultAlumno.isError()) {
+                ErrorHelper.showErrorMessage(lblErrorMessage, resultAlumno.getError());
                 return;
             }
 
-            Alumno alumno = result.getValue();
-            StringBuilder info = new StringBuilder();
-
-            info.append("Nombre: ").append(alumno.getNombres()).append(" ").append(alumno.getApellidos())
-                    .append("\nDNI: ").append(alumno.getDni())
-                    .append("\nEdad: ").append(alumno.getEdad())
-                    .append("\nCelular: ").append(alumno.getCelular())
-                    .append("\nEstado: ").append(getEstadoText(alumno.getEstado()));
+            Alumno alumno = resultAlumno.getValue();
+            // StringBuilder info = new StringBuilder();
+            Curso curso = null;
 
             if (alumno.getEstado() == 1) {
                 Result<Curso> cursoResult = consultaService.consultarCursoDeAlumno(codAlumno);
                 if (cursoResult.isSuccess()) {
-                    Curso curso = cursoResult.getValue();
-                    info.append("\n\n➡ Curso matriculado:")
-                            .append("\nCódigo: ").append(curso.getCodCurso())
-                            .append("\nAsignatura: ").append(curso.getAsignatura())
-                            .append("\nCiclo: ").append(curso.getCiclo())
-                            .append("\nCréditos: ").append(curso.getCreditos())
-                            .append("\nHoras: ").append(curso.getHoras());
-                } else {
-                    info.append("\n\n⚠ Matriculado, pero no se pudo obtener información del curso.")
-                            .append("\nMotivo: ").append(cursoResult.getError());
+                    curso = cursoResult.getValue();
                 }
             }
 
-            txtResultadoAlumno.setText(info.toString());
+            // txtResultadoAlumno.setText(info.toString());
+            AlumnoInfoModal modal = new AlumnoInfoModal(this, alumno, curso);
+            modal.setVisible(true);
 
-        } catch (NumberFormatException ex) {
-            txtResultadoAlumno.setText("⚠ El código debe ser un número entero.");
+        } catch (NumberFormatException e) {
+            // txtResultadoAlumno.setText("⚠ El código debe ser un número entero.");
+            ErrorHelper.showErrorMessage(lblErrorMessage, "El codigo debe ser un número valido");
         }
     }
 
-    private void buscarCurso() {
+    private void onBuscarCurso() {
+        ErrorHelper.clearErrorMessage(lblErrorMessage);
+        String textoCodigo = txtCodigoCurso.getText().trim();
+
+        if (textoCodigo.isEmpty()) {
+            ErrorHelper.showErrorMessage(lblErrorMessage, "Debe ingresar un codigo de curso");
+            return;
+        }
+
         try {
-            int codCurso = Integer.parseInt(txtCodigoCurso.getText().trim());
+            int codCurso = Integer.parseInt(textoCodigo);
+            Result<Curso> resultCurso = consultaService.consultarCursoPorCodigo(codCurso);
 
-            Result<Curso> result = consultaService.consultarCursoPorCodigo(codCurso);
-            if (result.isSuccess()) {
-                Curso curso = result.getValue();
-                String info = "Código: " + curso.getCodCurso() +
-                        "\nAsignatura: " + curso.getAsignatura() +
-                        "\nCiclo: " + curso.getCiclo() +
-                        "\nCréditos: " + curso.getCreditos() +
-                        "\nHoras: " + curso.getHoras();
-
-                txtResultadoCurso.setText(info);
+            if (resultCurso.isSuccess()) {
+                Curso curso = resultCurso.getValue();
+                CursoInfoModal modal = new CursoInfoModal(this, curso);
+                modal.setVisible(true);
             } else {
-                txtResultadoCurso.setText("⚠ " + result.getError());
+                ErrorHelper.showErrorMessage(lblErrorMessage, resultCurso.getError());
             }
         } catch (NumberFormatException ex) {
-            txtResultadoCurso.setText("⚠ El código debe ser un número entero.");
+
+            ErrorHelper.showErrorMessage(lblErrorMessage, "El codigo debe ser un número válido");
         }
+
     }
 
     private String getEstadoText(int estado) {
