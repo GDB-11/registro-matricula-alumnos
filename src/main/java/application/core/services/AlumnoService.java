@@ -21,7 +21,13 @@ public class AlumnoService implements IAlumno {
 	}
 
 	public Result<Alumno> saveAlumno(String nombres, String apellidos, String dni, int edad, int celular) {
-		Alumno alumno = new Alumno(nombres, apellidos, dni, edad, celular, ConstantsHelper.AlumnoConstants.getEstadoRegistrado());
+		Result<Integer> ultimoCodigoRegistrado = _alumnoRepository.getUltimoCodigoAlumnoIngresado();
+
+		if (ultimoCodigoRegistrado.isError()) {
+			return Result.error(ultimoCodigoRegistrado.getError(), ultimoCodigoRegistrado.getException());
+		}
+
+		Alumno alumno = new Alumno(ConstantsHelper.AlumnoCodigo.Generar(ultimoCodigoRegistrado.getValue()), nombres, apellidos, dni, edad, celular, ConstantsHelper.AlumnoConstants.getEstadoRegistrado());
 
 		return _alumnoRepository.saveAlumno(alumno);
 	}

@@ -10,4 +10,5 @@ public interface IRetiroRepository {
     Result<Retiro> saveRetiro(Retiro retiro);
     Result<Retiro> getRetiroByCodigo(int numRetiro);
     Result<Void> deleteRetiro(int numRetiro);
+    Result<Integer> getUltimoNumRetiroIngresado();
 }

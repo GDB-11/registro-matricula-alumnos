@@ -46,16 +46,17 @@ public class MatriculaRepository implements IMatriculaRepository {
 
     public Result<Matricula> saveMatricula(Matricula matricula) {
         String sql = """
-                INSERT INTO matricula (cod_alumno, cod_curso, fecha, hora)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO matricula (num_matricula, cod_alumno, cod_curso, fecha, hora)
+                VALUES (?, ?, ?, ?, ?)
                 """;
 
         try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql,
                 Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setInt(1, matricula.getCodAlumno());
-            stmt.setInt(2, matricula.getCodCurso());
-            stmt.setString(3, matricula.getFecha());
-            stmt.setString(4, matricula.getHora());
+            stmt.setInt(1, matricula.getNumMatricula());
+            stmt.setInt(2, matricula.getCodAlumno());
+            stmt.setInt(3, matricula.getCodCurso());
+            stmt.setString(4, matricula.getFecha());
+            stmt.setString(5, matricula.getHora());
 
             int affectedRows = stmt.executeUpdate();
 
@@ -188,6 +189,30 @@ public class MatriculaRepository implements IMatriculaRepository {
             }
         } catch (SQLException e) {
             return Result.error("Error buscando matrícula del alumno", e);
+        } finally {
+            _databaseManager.closeConnection();
+        }
+    }
+
+    public Result<Integer> getUltimoNumMatriculaIngresado() {
+        String sql = """
+				SELECT
+					MAX(num_matricula) as ultimo_codigo
+				FROM
+					matricula
+				WHERE
+					strftime('%Y', created_at) = strftime('%Y', 'now');
+				""";
+
+        try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()){
+            if (rs.next()) {
+                int ultimo_codigo = rs.getInt(1);
+                return Result.success(ultimo_codigo);
+            }
+            return Result.success(0);
+        } catch (SQLException e) {
+            return Result.error("Error obteniendo el último número de matrícula ingresado", e);
         } finally {
             _databaseManager.closeConnection();
         }

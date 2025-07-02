@@ -17,4 +17,5 @@ public interface IAlumnoRepository {
 	Result<List<Alumno>> getAlumnosForMatricula();
 	Result<List<Alumno>> getAlumnosMatriculadosEnCurso(int codCurso);
 	Result<Alumno> getAlumnoInMatricula(int numMatricula);
+	Result<Integer> getUltimoCodigoAlumnoIngresado();
 }

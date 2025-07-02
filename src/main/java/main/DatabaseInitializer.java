@@ -24,7 +24,7 @@ public class DatabaseInitializer {
     private void createAlumnoTable() {
         String sql = """
             CREATE TABLE IF NOT EXISTS alumno (
-                cod_alumno INTEGER PRIMARY KEY AUTOINCREMENT,
+                cod_alumno INTEGER PRIMARY KEY,
                 nombres TEXT NOT NULL,
                 apellidos TEXT NOT NULL,
                 dni TEXT NOT NULL UNIQUE,
@@ -56,7 +56,7 @@ public class DatabaseInitializer {
     private void createMatriculaTable() {
         String sql = """
             CREATE TABLE IF NOT EXISTS matricula (
-                num_matricula INTEGER PRIMARY KEY AUTOINCREMENT,
+                num_matricula INTEGER PRIMARY KEY,
                 cod_alumno INTEGER NOT NULL,
                 cod_curso INTEGER NOT NULL,
                 fecha TEXT NOT NULL,
@@ -73,7 +73,7 @@ public class DatabaseInitializer {
     private void createRetiroTable() {
         String sql = """
             CREATE TABLE IF NOT EXISTS retiro (
-                num_retiro INTEGER PRIMARY KEY AUTOINCREMENT,
+                num_retiro INTEGER PRIMARY KEY,
                 num_matricula INTEGER NOT NULL,
                 fecha DATE NOT NULL,
                 hora TIME NOT NULL,

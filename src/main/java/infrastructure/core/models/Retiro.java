@@ -13,12 +13,6 @@ public class Retiro {
         this.hora = hora;
     }
 
-    public Retiro(int numMatricula, String fecha, String hora) {
-        this.numMatricula = numMatricula;
-        this.fecha = fecha;
-        this.hora = hora;
-    }
-
     public int getNumRetiro() {
         return numRetiro;
     }

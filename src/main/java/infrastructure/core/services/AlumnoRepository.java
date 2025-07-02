@@ -52,16 +52,17 @@ public class AlumnoRepository implements IAlumnoRepository {
 
     public Result<Alumno> saveAlumno(Alumno alumno) { 
     	String sql = """
-                INSERT INTO alumno (nombres, apellidos, dni, edad, celular, estado) 
-                VALUES (?, ?, ?, ?, ?, 0)
+                INSERT INTO alumno (cod_alumno, nombres, apellidos, dni, edad, celular, estado) 
+                VALUES (?, ?, ?, ?, ?, ?, 0)
                 """;
     	
     	try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-    		stmt.setString(1, alumno.getNombres());
-            stmt.setString(2, alumno.getApellidos());
-            stmt.setString(3, alumno.getDni());
-            stmt.setInt(4, alumno.getEdad());
-            stmt.setString(5, String.valueOf(alumno.getCelular()));
+			stmt.setInt(1, alumno.getCodAlumno());
+    		stmt.setString(2, alumno.getNombres());
+            stmt.setString(3, alumno.getApellidos());
+            stmt.setString(4, alumno.getDni());
+            stmt.setInt(5, alumno.getEdad());
+            stmt.setString(6, String.valueOf(alumno.getCelular()));
             
             int affectedRows = stmt.executeUpdate();
             
@@ -333,6 +334,30 @@ public class AlumnoRepository implements IAlumnoRepository {
 			}
 		} catch (SQLException e) {
 			return Result.error("Error obteniendo alumno en matrícula " + numMatricula, e);
+		} finally {
+			_databaseManager.closeConnection();
+		}
+	}
+
+	public Result<Integer> getUltimoCodigoAlumnoIngresado() {
+		String sql = """
+				SELECT
+					MAX(cod_alumno) as ultimo_codigo
+				FROM
+					alumno
+				WHERE
+					strftime('%Y', created_at) = strftime('%Y', 'now');
+				""";
+
+		try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql);
+			 ResultSet rs = stmt.executeQuery()){
+			if (rs.next()) {
+				int ultimo_codigo = rs.getInt(1);
+				return Result.success(ultimo_codigo);
+			}
+			return Result.success(0);
+		} catch (SQLException e) {
+			return Result.error("Error obteniendo el último código de alumno ingresado", e);
 		} finally {
 			_databaseManager.closeConnection();
 		}

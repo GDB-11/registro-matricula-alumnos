@@ -37,9 +37,15 @@ public class MatriculaService implements IMatricula {
             return Result.error("No se puede matricular al alumno nuevamente");
         }
 
+        Result<Integer> ultimoCodigoRegistrado = _matriculaRepository.getUltimoNumMatriculaIngresado();
+
+        if (ultimoCodigoRegistrado.isError()) {
+            return Result.error(ultimoCodigoRegistrado.getError(), ultimoCodigoRegistrado.getException());
+        }
+
         Date fecha = new Date();
 
-        Matricula matricula = new Matricula(codAlumno, codCurso, DateHelper.getFormattedDate(fecha), DateHelper.getFormattedTime(fecha));
+        Matricula matricula = new Matricula(ConstantsHelper.MatriculaCodigo.Generar(ultimoCodigoRegistrado.getValue()), codAlumno, codCurso, DateHelper.getFormattedDate(fecha), DateHelper.getFormattedTime(fecha));
 
         _alumnoRepository.updateToMatriculado(codAlumno);
 

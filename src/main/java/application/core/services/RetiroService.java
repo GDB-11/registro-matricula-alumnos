@@ -26,6 +26,12 @@ public class RetiroService implements IRetiro {
     }
 
     public Result<Retiro> saveRetiro(int numMatricula) {
+        Result<Integer> ultimoCodigoRegistrado = _retiroRepository.getUltimoNumRetiroIngresado();
+
+        if (ultimoCodigoRegistrado.isError()) {
+            return Result.error(ultimoCodigoRegistrado.getError(), ultimoCodigoRegistrado.getException());
+        }
+
         Result<Alumno> alumnoMatriculado = _alumnoRepository.getAlumnoInMatricula(numMatricula);
 
         if (alumnoMatriculado.isError()) {
@@ -40,7 +46,7 @@ public class RetiroService implements IRetiro {
 
         Date fecha = new Date();
 
-        Retiro retiro = new Retiro(numMatricula, DateHelper.getFormattedDate(fecha), DateHelper.getFormattedTime(fecha));
+        Retiro retiro = new Retiro(ConstantsHelper.RetiroCodigo.Generar(ultimoCodigoRegistrado.getValue()), numMatricula, DateHelper.getFormattedDate(fecha), DateHelper.getFormattedTime(fecha));
 
         return _retiroRepository.saveRetiro(retiro);
     }

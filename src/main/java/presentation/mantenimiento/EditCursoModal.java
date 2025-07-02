@@ -259,7 +259,7 @@ public class EditCursoModal extends JDialog {
 		}
 
 		// Horas
-		String horaText = txtCredito.getText().trim();
+		String horaText = txtHora.getText().trim();
 		if (horaText.isEmpty()) {
 			ErrorHelper.showErrorMessage(lblErrorMessage, "El campo Horas es obligatorio");
 			txtHora.requestFocus();

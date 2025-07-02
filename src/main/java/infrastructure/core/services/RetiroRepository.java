@@ -45,14 +45,15 @@ public class RetiroRepository implements IRetiroRepository {
 
     public Result<Retiro> saveRetiro(Retiro retiro) {
         String sql = """
-                INSERT INTO retiro (num_matricula, fecha, hora)
-                VALUES (?, ?, ?)
+                INSERT INTO retiro (num_retiro, num_matricula, fecha, hora)
+                VALUES (?, ?, ?, ?)
                 """;
 
         try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setInt(1, retiro.getNumMatricula());
-            stmt.setString(2, retiro.getFecha());
-            stmt.setString(3, retiro.getHora());
+            stmt.setInt(1, retiro.getNumRetiro());
+            stmt.setInt(2, retiro.getNumMatricula());
+            stmt.setString(3, retiro.getFecha());
+            stmt.setString(4, retiro.getHora());
 
             int affectedRows = stmt.executeUpdate();
 
@@ -113,6 +114,30 @@ public class RetiroRepository implements IRetiroRepository {
             return Result.error("No se pudo cancelar el retiro");
         } catch (SQLException e) {
             return Result.error("Excepción al cancelar el retiro", e);
+        } finally {
+            _databaseManager.closeConnection();
+        }
+    }
+
+    public Result<Integer> getUltimoNumRetiroIngresado() {
+        String sql = """
+				SELECT
+					MAX(num_retiro) as ultimo_codigo
+				FROM
+					retiro
+				WHERE
+					strftime('%Y', created_at) = strftime('%Y', 'now');
+				""";
+
+        try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()){
+            if (rs.next()) {
+                int ultimo_codigo = rs.getInt(1);
+                return Result.success(ultimo_codigo);
+            }
+            return Result.success(0);
+        } catch (SQLException e) {
+            return Result.error("Error obteniendo el último número de retiro ingresado", e);
         } finally {
             _databaseManager.closeConnection();
         }
