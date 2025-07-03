@@ -1,15 +1,11 @@
 package main;
 
-import application.core.interfaces.IMatricula;
-import application.core.interfaces.IRetiro;
+import application.core.interfaces.*;
 import presentation.MainWindow;
 import presentation.consultas.AlumnosCursosWindow;
 import presentation.consultas.MatriculasRetirosWindow;
 import presentation.mantenimiento.AlumnoWindow;
 import presentation.mantenimiento.CursoWindow;
-import application.core.interfaces.IAlumno;
-import application.core.interfaces.IConsulta;
-import application.core.interfaces.ICurso;
 import presentation.registro.matricula.MatriculaWindow;
 import presentation.registro.retiro.RetiroWindow;
 import presentation.reporte.ReportesWindow;
@@ -35,7 +31,9 @@ public class WindowFactory {
      * Crea la ventana principal
      */
     public MainWindow createMainWindow() {
-        return new MainWindow(this);
+        IWindow windowService = serviceContainer.getService(IWindow.class);
+
+        return new MainWindow(this, windowService);
     }
 
     /**

@@ -3,6 +3,7 @@ package presentation;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
+import application.core.interfaces.IWindow;
 import infrastructure.core.interfaces.IAlumnoRepository;
 import main.WindowFactory;
 import presentation.consultas.MatriculasRetirosWindow;
@@ -20,12 +21,12 @@ public class MainWindow extends JFrame {
     @Serial
     private static final long serialVersionUID = 1L;
     private final WindowFactory windowFactory;
+    private final IWindow windowService;
 
-    public MainWindow(WindowFactory windowFactory) {
+    public MainWindow(WindowFactory windowFactory, IWindow windowService) {
         this.windowFactory = windowFactory;
+        this.windowService = windowService;
         initializeComponents();
-        //solo para pruebas
-        //imprimirAlumnosDesdeRepositorio();
     }
 
     private void initializeComponents() {
@@ -114,6 +115,7 @@ public class MainWindow extends JFrame {
         try {
             AlumnoWindow alumnoWindow = windowFactory.createAlumnoWindow();
             alumnoWindow.setVisible(true);
+            alumnoWindow.setIconImage(windowService.getWindowIcon());
 
             System.out.println("AlumnoWindow abierto");
         } catch (Exception e) {
@@ -124,8 +126,9 @@ public class MainWindow extends JFrame {
     private void openCursoWindow() {
         try {
             CursoWindow cursoWindow = windowFactory.createCursoWindow();
-
             cursoWindow.setVisible(true);
+            cursoWindow.setIconImage(windowService.getWindowIcon());
+
             System.out.println("CursoWindow abierto");
         } catch (Exception e) {
             handleWindowError("CursoWindow", e);
@@ -135,8 +138,9 @@ public class MainWindow extends JFrame {
     private void openMatriculaWindow() {
         try {
             MatriculaWindow matriculaWindow = windowFactory.createMatriculaWindow();
-
             matriculaWindow.setVisible(true);
+            matriculaWindow.setIconImage(windowService.getWindowIcon());
+
             System.out.println("MatriculaWindow abierto");
         } catch (Exception e) {
             handleWindowError("MatriculaWindow", e);
@@ -146,8 +150,9 @@ public class MainWindow extends JFrame {
     private void openRetiroWindow() {
         try {
             RetiroWindow retiroWindow = windowFactory.createRetiroWindow();
-
             retiroWindow.setVisible(true);
+            retiroWindow.setIconImage(windowService.getWindowIcon());
+
             System.out.println("RetiroWindow abierto");
         } catch (Exception e) {
             handleWindowError("RetiroWindow", e);
@@ -169,6 +174,8 @@ public class MainWindow extends JFrame {
         try {
             var alumnosCursosWindow = windowFactory.createAlumnosCursosWindow();
             alumnosCursosWindow.setVisible(true);
+            alumnosCursosWindow.setIconImage(windowService.getWindowIcon());
+
             System.out.println("AlumnosCursosWindow abierto");
         } catch (Exception e) {
             handleWindowError("AlumnoCursosWindow", e);
@@ -179,6 +186,8 @@ public class MainWindow extends JFrame {
         try {
             MatriculasRetirosWindow window = windowFactory.createMatriculasRetirosWindow();
             window.setVisible(true);
+            window.setIconImage(windowService.getWindowIcon());
+
             System.out.println("MAtriculasRetirosWindow Abierto");
         } catch (Exception e) {
             handleWindowError("MatriculasRetirosWindow", e);
@@ -189,6 +198,8 @@ public class MainWindow extends JFrame {
         try {
             ReportesWindow window = windowFactory.createReportesWindow();
             window.setVisible(true);
+            window.setIconImage(windowService.getWindowIcon());
+
             System.out.println("ReportesWindow Abierto");
         } catch (Exception e) {
             handleWindowError("ReportesWindow", e);
