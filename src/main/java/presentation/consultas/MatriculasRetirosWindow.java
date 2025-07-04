@@ -5,6 +5,14 @@ import java.awt.*;
 
 import application.core.interfaces.IConsulta;
 import global.Result;
+import infrastructure.core.models.Alumno;
+import infrastructure.core.models.Curso;
+import infrastructure.core.models.Matricula;
+import infrastructure.core.models.Retiro;
+import presentation.helper.ButtonHelper;
+import presentation.helper.ErrorHelper;
+import presentation.helper.GridBagHelper;
+import presentation.helper.TextFieldHelper;
 import presentation.helper.WindowHelper;
 
 public class MatriculasRetirosWindow extends JFrame {
@@ -13,12 +21,13 @@ public class MatriculasRetirosWindow extends JFrame {
   // MAtricula
   private JTextField txtNumMatricula;
   private JButton btnBuscarMatricula;
-  private JTextArea txtResultadoMatricula;
 
   // Retiro
   private JTextField txtNumRetiro;
   private JButton btnBuscarRetiro;
-  private JTextArea txtResultadoRetiro;
+
+  // mensaje de error
+  private JLabel lblErrorMessage;
 
   public MatriculasRetirosWindow(IConsulta consultaService) {
     this.consultaService = consultaService;
@@ -38,100 +47,173 @@ public class MatriculasRetirosWindow extends JFrame {
 
     // Matricula
     txtNumMatricula = new JTextField(10);
+    TextFieldHelper.styleTextField(txtNumMatricula);
     btnBuscarMatricula = new JButton("Buscar Matricula");
-    txtResultadoMatricula = new JTextArea(7, 40);
-    txtResultadoMatricula.setEditable(false);
-    txtResultadoMatricula.setLineWrap(true);
-    txtResultadoMatricula.setWrapStyleWord(true);
+    ButtonHelper.styleButton(btnBuscarMatricula, new Color(46, 204, 113));
+    btnBuscarMatricula.setForeground(Color.WHITE);
 
     // Retiro
     txtNumRetiro = new JTextField(10);
-    btnBuscarRetiro = new JButton("Buscar REtiro");
-    txtResultadoRetiro = new JTextArea(7, 40);
-    txtResultadoRetiro.setEditable(false);
-    txtResultadoRetiro.setLineWrap(true);
-    txtResultadoRetiro.setWrapStyleWord(true);
+    TextFieldHelper.styleTextField(txtNumRetiro);
+    btnBuscarRetiro = new JButton("Buscar Retiro");
+    ButtonHelper.styleButton(btnBuscarRetiro, new Color(46, 204, 113));
+    btnBuscarRetiro.setForeground(Color.WHITE);
+
+    // Mensaje de error
+    lblErrorMessage = new JLabel();
+    lblErrorMessage.setHorizontalAlignment(SwingConstants.CENTER);
+    lblErrorMessage.setForeground(Color.RED);
+
+    setTitle("Consulta de Matrículas y Retiros");
+    setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+    setSize(700, 400);
+    setResizable(false);
+    setLocationRelativeTo(null);
   }
 
   private void setupLayout() {
-    JTabbedPane tabbedPane = new JTabbedPane();
+    setLayout(new BorderLayout());
 
-    // Agregar metodos
-    tabbedPane.addTab("Matricula", createMatriculaPanel());
-    tabbedPane.addTab("Retiro", createRetiroPanel());
+    // Panel para busqueda de matricula
+    JPanel matriculaPanel = new JPanel(new GridBagLayout());
+    GridBagConstraints gbcMatricula = new GridBagConstraints();
+    gbcMatricula.insets = new Insets(8, 8, 8, 8);
+    gbcMatricula.anchor = GridBagConstraints.WEST;
 
-    setContentPane(tabbedPane);
-  }
+    gbcMatricula.fill = GridBagConstraints.HORIZONTAL;
+    gbcMatricula.weightx = 1.0; // Esto permite que el campo se expanda con el panel
 
-  private JPanel createMatriculaPanel() {
-    JPanel panel = new JPanel(new BorderLayout(10, 10));
-    panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+    GridBagHelper.addLabelAndComponent(matriculaPanel, gbcMatricula, 0, "N° Matrícula:", txtNumMatricula);
 
-    JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    searchPanel.setBorder(BorderFactory.createTitledBorder("Buscar Matrícula por Número"));
-    searchPanel.add(new JLabel("N° Matrícula:"));
-    searchPanel.add(txtNumMatricula);
-    searchPanel.add(btnBuscarMatricula);
+    gbcMatricula.gridx = 2;
+    gbcMatricula.gridy = 0;
+    // gbcMatricula.gridwidth = 1;
+    matriculaPanel.add(btnBuscarMatricula, gbcMatricula);
 
-    JScrollPane resultScroll = new JScrollPane(txtResultadoMatricula);
-    resultScroll.setBorder(BorderFactory.createTitledBorder("Resultado de la Búsqueda"));
+    // Panel para busqueda de Retiro
+    JPanel retiroPanel = new JPanel(new GridBagLayout());
+    GridBagConstraints gbcRetiro = new GridBagConstraints();
+    gbcRetiro.insets = new Insets(8, 8, 8, 8);
+    gbcRetiro.anchor = GridBagConstraints.WEST;
 
-    panel.add(searchPanel, BorderLayout.NORTH);
-    panel.add(resultScroll, BorderLayout.CENTER);
+    gbcRetiro.fill = GridBagConstraints.HORIZONTAL;
+    gbcRetiro.weightx = 1.0; // Esto permite que el campo se expanda con el panel
 
-    return panel;
-  }
+    GridBagHelper.addLabelAndComponent(retiroPanel, gbcRetiro, 0, "N° Retiro:", txtNumRetiro);
+    gbcRetiro.gridx = 2;
+    gbcRetiro.gridy = 0;
+    retiroPanel.add(btnBuscarRetiro, gbcRetiro);
 
-  private JPanel createRetiroPanel() {
-    JPanel panel = new JPanel(new BorderLayout(10, 10));
-    panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+    // Panel de errores
+    JPanel errorPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    errorPanel.add(lblErrorMessage);
 
-    JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    searchPanel.setBorder(BorderFactory.createTitledBorder("Buscar Retiro por Número"));
-    searchPanel.add(new JLabel("N° Retiro:"));
-    searchPanel.add(txtNumRetiro);
-    searchPanel.add(btnBuscarRetiro);
+    // Panel principal
+    JPanel mainPanel = new JPanel();
+    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+    mainPanel.setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));
+    mainPanel.add(matriculaPanel);
+    mainPanel.add(Box.createVerticalStrut(10));
+    mainPanel.add(retiroPanel);
+    mainPanel.add(Box.createVerticalStrut(10));
+    mainPanel.add(errorPanel);
 
-    JScrollPane resultScroll = new JScrollPane(txtResultadoRetiro);
-    resultScroll.setBorder(BorderFactory.createTitledBorder("Resultado de la Búsqueda"));
-
-    panel.add(searchPanel, BorderLayout.NORTH);
-    panel.add(resultScroll, BorderLayout.CENTER);
-
-    return panel;
+    setContentPane(mainPanel);
   }
 
   private void setupEvents() {
     // Agregar metodos
-    btnBuscarMatricula.addActionListener(e -> buscarMatricula());
-    btnBuscarRetiro.addActionListener(e -> buscarRetiro());
+    btnBuscarMatricula.addActionListener(e -> onBuscarMatricula());
+    btnBuscarRetiro.addActionListener(e -> onBuscarRetiro());
   }
 
-  private void buscarMatricula() {
+  private void onBuscarMatricula() {
+    ErrorHelper.clearErrorMessage(lblErrorMessage);
+    String textoCodigo = txtNumMatricula.getText().trim();
+
+    if (textoCodigo.isEmpty()) {
+      ErrorHelper.showErrorMessage(lblErrorMessage, "Debe ingresar un número de matrícula");
+      return;
+    }
+
     try {
-      int numMatricula = Integer.parseInt(txtNumMatricula.getText().trim());
+      int numMatricula = Integer.parseInt(textoCodigo);
 
-      Result<String> result = consultaService.consultarDatosDeMatricula(numMatricula);
-      txtResultadoMatricula.setText(result.isSuccess()
-          ? result.getValue()
-          : "⚠ " + result.getError());
+      Result<Matricula> resultMatricula = consultaService.getMatriculaByCodigo(numMatricula);
+      if (resultMatricula.isError()) {
+        ErrorHelper.showErrorMessage(lblErrorMessage, resultMatricula.getError());
+        return;
+      }
 
-    } catch (NumberFormatException ex) {
-      txtResultadoMatricula.setText("⚠ El número debe ser un valor entero.");
+      Matricula matricula = resultMatricula.getValue();
+
+      Result<Alumno> resultAlumno = consultaService.consultarAlumnoPorCodigo(matricula.getCodAlumno());
+      if (resultAlumno.isError()) {
+        ErrorHelper.showErrorMessage(lblErrorMessage, resultAlumno.getError());
+        return;
+      }
+
+      Result<Curso> resultCurso = consultaService.consultarCursoPorCodigo(matricula.getCodCurso());
+      if (resultCurso.isError()) {
+        ErrorHelper.showErrorMessage(lblErrorMessage, resultCurso.getError());
+        return;
+      }
+
+      MatriculaInfoModal modal = new MatriculaInfoModal(this, matricula, resultAlumno.getValue(),
+          resultCurso.getValue());
+      modal.setVisible(true);
+
+    } catch (NumberFormatException e) {
+      ErrorHelper.showErrorMessage(lblErrorMessage, "El código debe ser un número válido");
     }
   }
 
-  private void buscarRetiro() {
+  private void onBuscarRetiro() {
+    ErrorHelper.clearErrorMessage(lblErrorMessage);
+    String textoCodigo = txtNumRetiro.getText().trim();
+
+    if (textoCodigo.isEmpty()) {
+      ErrorHelper.showErrorMessage(lblErrorMessage, "Debe ingresar un número de retiro");
+      return;
+    }
+
     try {
-      int numRetiro = Integer.parseInt(txtNumRetiro.getText().trim());
+      int numRetiro = Integer.parseInt(textoCodigo);
 
-      Result<String> result = consultaService.consultarDatosDeRetiro(numRetiro);
-      txtResultadoRetiro.setText(result.isSuccess()
-          ? result.getValue()
-          : "⚠ " + result.getError());
+      Result<Retiro> resultRetiro = consultaService.getRetiroByCodigo(numRetiro);
+      if (resultRetiro.isError()) {
+        ErrorHelper.showErrorMessage(lblErrorMessage, resultRetiro.getError());
+        return;
+      }
 
-    } catch (NumberFormatException ex) {
-      txtResultadoRetiro.setText("⚠ El número debe ser un valor entero.");
+      Retiro retiro = resultRetiro.getValue();
+
+      Result<Matricula> resultMatricula = consultaService.getMatriculaByCodigo(retiro.getNumMatricula());
+      if (resultMatricula.isError()) {
+        ErrorHelper.showErrorMessage(lblErrorMessage, resultMatricula.getError());
+        return;
+      }
+
+      Matricula matricula = resultMatricula.getValue();
+
+      Result<Alumno> resultAlumno = consultaService.consultarAlumnoPorCodigo(matricula.getCodAlumno());
+      if (resultAlumno.isError()) {
+        ErrorHelper.showErrorMessage(lblErrorMessage, resultAlumno.getError());
+        return;
+      }
+
+      Result<Curso> resultCurso = consultaService.consultarCursoPorCodigo(matricula.getCodCurso());
+      if (resultCurso.isError()) {
+        ErrorHelper.showErrorMessage(lblErrorMessage, resultCurso.getError());
+        return;
+      }
+
+      RetirosInfoModal modal = new RetirosInfoModal(this, retiro, matricula, resultAlumno.getValue(),
+          resultCurso.getValue());
+      modal.setVisible(true);
+
+    } catch (NumberFormatException e) {
+      ErrorHelper.showErrorMessage(lblErrorMessage, "El código debe ser un número válido");
     }
   }
 }
