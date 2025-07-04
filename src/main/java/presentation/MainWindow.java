@@ -3,6 +3,7 @@ package presentation;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
+import application.core.interfaces.IWindow;
 import infrastructure.core.interfaces.IAlumnoRepository;
 import main.WindowFactory;
 import presentation.consultas.MatriculasRetirosWindow;
@@ -11,6 +12,7 @@ import presentation.mantenimiento.AlumnoWindow;
 import presentation.mantenimiento.CursoWindow;
 import presentation.registro.matricula.MatriculaWindow;
 import presentation.registro.retiro.RetiroWindow;
+import presentation.reporte.ReportesWindow;
 
 import java.awt.*;
 import java.io.Serial;
@@ -19,12 +21,12 @@ public class MainWindow extends JFrame {
     @Serial
     private static final long serialVersionUID = 1L;
     private final WindowFactory windowFactory;
+    private final IWindow windowService;
 
-    public MainWindow(WindowFactory windowFactory) {
+    public MainWindow(WindowFactory windowFactory, IWindow windowService) {
         this.windowFactory = windowFactory;
+        this.windowService = windowService;
         initializeComponents();
-        //solo para pruebas
-        //imprimirAlumnosDesdeRepositorio();
     }
 
     private void initializeComponents() {
@@ -72,14 +74,8 @@ public class MainWindow extends JFrame {
         JMenu mn_reporte = new JMenu("Reporte");
         menuBar_mainWindow.add(mn_reporte);
 
-        JMenuItem mntm_alumnosMatriculaPendiente = new JMenuItem("Alumnos con matrícula pendiente");
-        mn_reporte.add(mntm_alumnosMatriculaPendiente);
-
-        JMenuItem mntm_alumnosMatriculaVigente = new JMenuItem("Alumnos con matrícula vigente");
-        mn_reporte.add(mntm_alumnosMatriculaVigente);
-
-        JMenuItem mntm_alumnosMatriculadosPorCurso = new JMenuItem("Alumnos matriculados por curso");
-        mn_reporte.add(mntm_alumnosMatriculadosPorCurso);
+        JMenuItem mntm_reportes = new JMenuItem("Reportes");
+        mn_reporte.add(mntm_reportes);
 
         // Content panel
         JPanel contentPane = new JPanel();
@@ -112,12 +108,14 @@ public class MainWindow extends JFrame {
         mntm_retiro.addActionListener(e -> openRetiroWindow());
         mntm_matriculasRetiros.addActionListener(e -> openMatriculasRetirosWindow());
         mntm_alumnosCursos.addActionListener(e -> openAlumnosCursosWindow());
+        mntm_reportes.addActionListener(e -> openReportesWindow());
     }
 
     private void openAlumnoWindow() {
         try {
             AlumnoWindow alumnoWindow = windowFactory.createAlumnoWindow();
             alumnoWindow.setVisible(true);
+            alumnoWindow.setIconImage(windowService.getWindowIcon());
 
             System.out.println("AlumnoWindow abierto");
         } catch (Exception e) {
@@ -128,8 +126,9 @@ public class MainWindow extends JFrame {
     private void openCursoWindow() {
         try {
             CursoWindow cursoWindow = windowFactory.createCursoWindow();
-
             cursoWindow.setVisible(true);
+            cursoWindow.setIconImage(windowService.getWindowIcon());
+
             System.out.println("CursoWindow abierto");
         } catch (Exception e) {
             handleWindowError("CursoWindow", e);
@@ -139,8 +138,9 @@ public class MainWindow extends JFrame {
     private void openMatriculaWindow() {
         try {
             MatriculaWindow matriculaWindow = windowFactory.createMatriculaWindow();
-
             matriculaWindow.setVisible(true);
+            matriculaWindow.setIconImage(windowService.getWindowIcon());
+
             System.out.println("MatriculaWindow abierto");
         } catch (Exception e) {
             handleWindowError("MatriculaWindow", e);
@@ -150,8 +150,9 @@ public class MainWindow extends JFrame {
     private void openRetiroWindow() {
         try {
             RetiroWindow retiroWindow = windowFactory.createRetiroWindow();
-
             retiroWindow.setVisible(true);
+            retiroWindow.setIconImage(windowService.getWindowIcon());
+
             System.out.println("RetiroWindow abierto");
         } catch (Exception e) {
             handleWindowError("RetiroWindow", e);
@@ -173,6 +174,8 @@ public class MainWindow extends JFrame {
         try {
             var alumnosCursosWindow = windowFactory.createAlumnosCursosWindow();
             alumnosCursosWindow.setVisible(true);
+            alumnosCursosWindow.setIconImage(windowService.getWindowIcon());
+
             System.out.println("AlumnosCursosWindow abierto");
         } catch (Exception e) {
             handleWindowError("AlumnoCursosWindow", e);
@@ -183,26 +186,23 @@ public class MainWindow extends JFrame {
         try {
             MatriculasRetirosWindow window = windowFactory.createMatriculasRetirosWindow();
             window.setVisible(true);
+            window.setIconImage(windowService.getWindowIcon());
+
             System.out.println("MAtriculasRetirosWindow Abierto");
         } catch (Exception e) {
             handleWindowError("MatriculasRetirosWindow", e);
         }
     }
-    //Metodo de prueba para debugg
-/*     private void imprimirAlumnosDesdeRepositorio() {
-        IAlumnoRepository alumnoRepo = windowFactory
-                .getServiceContainer()
-                .getService(IAlumnoRepository.class);
 
-        var result = alumnoRepo.getAllAlumnos();
-        if (result.isSuccess()) {
-            System.out.println("📋 Lista de alumnos encontrados en BD:");
-            for (var a : result.getValue()) {
-                System.out.printf("ID: %d | Nombre: %s %s | Estado: %d%n",
-                        a.getCodAlumno(), a.getNombres(), a.getApellidos(), a.getEstado());
-            }
-        } else {
-            System.out.println("❌ Error al obtener alumnos: " + result.getError());
+    private void openReportesWindow() {
+        try {
+            ReportesWindow window = windowFactory.createReportesWindow();
+            window.setVisible(true);
+            window.setIconImage(windowService.getWindowIcon());
+
+            System.out.println("ReportesWindow Abierto");
+        } catch (Exception e) {
+            handleWindowError("ReportesWindow", e);
         }
-    } */
+    }
 }

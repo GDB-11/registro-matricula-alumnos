@@ -13,4 +13,5 @@ public interface IMatriculaRepository {
     Result<Boolean> alumnoMatriculado(int codAlumno);
     Result<Matricula> getMatriculaByCodigo(int numMatricula);
     Result<Matricula> getMatriculaByCodAlumno(int codAlumno);
+    Result<Integer> getUltimoNumMatriculaIngresado();
 }

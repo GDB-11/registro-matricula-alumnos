@@ -1,6 +1,7 @@
 package application.core.services;
 
 import application.core.interfaces.IMatricula;
+import global.ConstantsHelper;
 import global.DateHelper;
 import global.Result;
 import infrastructure.core.interfaces.IAlumnoRepository;
@@ -8,6 +9,7 @@ import infrastructure.core.interfaces.IMatriculaRepository;
 import infrastructure.core.models.Alumno;
 import infrastructure.core.models.Matricula;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -35,9 +37,15 @@ public class MatriculaService implements IMatricula {
             return Result.error("No se puede matricular al alumno nuevamente");
         }
 
+        Result<Integer> ultimoCodigoRegistrado = _matriculaRepository.getUltimoNumMatriculaIngresado();
+
+        if (ultimoCodigoRegistrado.isError()) {
+            return Result.error(ultimoCodigoRegistrado.getError(), ultimoCodigoRegistrado.getException());
+        }
+
         Date fecha = new Date();
 
-        Matricula matricula = new Matricula(codAlumno, codCurso, DateHelper.getFormattedDate(fecha), DateHelper.getFormattedTime(fecha));
+        Matricula matricula = new Matricula(ConstantsHelper.MatriculaCodigo.Generar(ultimoCodigoRegistrado.getValue()), codAlumno, codCurso, DateHelper.getFormattedDate(fecha), DateHelper.getFormattedTime(fecha));
 
         _alumnoRepository.updateToMatriculado(codAlumno);
 
@@ -69,10 +77,33 @@ public class MatriculaService implements IMatricula {
             return Result.error(alumno.getError());
         }
 
-        if (alumno.getValue().getEstado() == 2) {
+        if (alumno.getValue().getEstado() == ConstantsHelper.AlumnoConstants.getEstadoRetirado()) {
             return Result.error("No se puede cancelar la matrícula de un alumno con estado 'retirado'");
         }
 
         return _matriculaRepository.deleteMatricula(numMatricula);
+    }
+
+    public Result<List<Alumno>> getAllAlumnosEnCurso(int codCurso) {
+        List<Alumno> alumnosEnCurso = new ArrayList<>();
+        Result<List<Matricula>> matriculas = _matriculaRepository.getAllMatriculas();
+
+        if (matriculas.isError()) {
+            return Result.error(matriculas.getError());
+        }
+
+        for (int i = 0; i < matriculas.getValue().size(); i++) {
+            if (matriculas.getValue().get(i).getCodCurso() == codCurso) {
+                Result<Alumno> alumno = _alumnoRepository.getAlumnoByCodigo(matriculas.getValue().get(i).getCodAlumno());
+
+                if (alumno.isError()) {
+                    return Result.error(alumno.getError());
+                }
+
+                alumnosEnCurso.add(alumno.getValue());
+            }
+        }
+
+        return Result.success(alumnosEnCurso);
     }
 }

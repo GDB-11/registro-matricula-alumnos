@@ -39,8 +39,9 @@ public class CursoRepository implements ICursoRepository {
             return Result.success(cursos);
         } catch (SQLException e) {
             return Result.error("Error obteniendo todos los cursos", e);
+        } finally {
+            _databaseManager.closeConnection();
         }
-
     }
 
     public Result<Curso> saveCurso(Curso curso) {
@@ -66,6 +67,8 @@ public class CursoRepository implements ICursoRepository {
 
         } catch (SQLException e) {
             return Result.error("Excepción al insertar el curso", e);
+        } finally {
+            _databaseManager.closeConnection();
         }
     }
 
@@ -84,7 +87,9 @@ public class CursoRepository implements ICursoRepository {
 			}
 		} catch (SQLException e) {
 			return Result.error("Error verificando existencia del código de curso: " + codigo, e);
-		}
+		} finally {
+            _databaseManager.closeConnection();
+        }
 	}
 
     public Result<Curso> editCurso(Curso curso) {
@@ -111,6 +116,8 @@ public class CursoRepository implements ICursoRepository {
 
         } catch (SQLException e) {
             return Result.error("Excepción al editar el curso", e);
+        } finally {
+            _databaseManager.closeConnection();
         }
     }
 
@@ -129,7 +136,9 @@ public class CursoRepository implements ICursoRepository {
 			return Result.error("No se pudo eliminar el curso");
 		} catch (SQLException e) {
 			return Result.error("Excepción al eliminar el curso", e);
-		}
+		} finally {
+            _databaseManager.closeConnection();
+        }
 	}
 
     public Result<Curso> getCursoFromMatricula(int numMatricula) {
@@ -161,29 +170,32 @@ public class CursoRepository implements ICursoRepository {
             }
         } catch (SQLException e) {
             return Result.error("Error obteniendo curso en matrícula " + numMatricula, e);
+        } finally {
+            _databaseManager.closeConnection();
         }
     }
 
     public Result<Curso> getCursoByCodigo(int codCurso) {
-    String sql = "SELECT * FROM curso WHERE cod_curso = ?";
-    try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql)) {
-        stmt.setInt(1, codCurso);
-        ResultSet rs = stmt.executeQuery();
-        if (rs.next()) {
-            Curso curso = new Curso(
-                rs.getInt("cod_curso"),
-                rs.getString("asignatura"),
-                rs.getInt("ciclo"),
-                rs.getInt("creditos"),
-                rs.getInt("horas")
-            );
-            return Result.success(curso);
-        } else {
-            return Result.error("Curso no encontrado.");
+        String sql = "SELECT * FROM curso WHERE cod_curso = ?";
+        try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setInt(1, codCurso);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                Curso curso = new Curso(
+                    rs.getInt("cod_curso"),
+                    rs.getString("asignatura"),
+                    rs.getInt("ciclo"),
+                    rs.getInt("creditos"),
+                    rs.getInt("horas")
+                );
+                return Result.success(curso);
+            } else {
+                return Result.error("Curso no encontrado.");
+            }
+        } catch (SQLException e) {
+            return Result.error("Error al buscar curso", e);
+        } finally {
+            _databaseManager.closeConnection();
         }
-    } catch (SQLException e) {
-        return Result.error("Error al buscar curso", e);
     }
-}
-
 }

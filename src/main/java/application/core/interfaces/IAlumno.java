@@ -12,4 +12,6 @@ public interface IAlumno {
 	Result<Alumno> editAlumno(int codigo, String nombres, String apellidos, int edad, int celular, int estado);
 	Result<Void> deleteAlumno(int codigo);
 	Result<List<Alumno>> getAlumnosForMatricula();
+	Result<List<Alumno>> getAllAlumnosEstadoRegistrado();
+	Result<List<Alumno>> getAllAlumnosEstadoMatriculado();
 }

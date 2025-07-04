@@ -1,6 +1,7 @@
 package application.core.services;
 
 import application.core.interfaces.IRetiro;
+import global.ConstantsHelper;
 import global.DateHelper;
 import global.Result;
 import infrastructure.core.interfaces.IAlumnoRepository;
@@ -25,6 +26,12 @@ public class RetiroService implements IRetiro {
     }
 
     public Result<Retiro> saveRetiro(int numMatricula) {
+        Result<Integer> ultimoCodigoRegistrado = _retiroRepository.getUltimoNumRetiroIngresado();
+
+        if (ultimoCodigoRegistrado.isError()) {
+            return Result.error(ultimoCodigoRegistrado.getError(), ultimoCodigoRegistrado.getException());
+        }
+
         Result<Alumno> alumnoMatriculado = _alumnoRepository.getAlumnoInMatricula(numMatricula);
 
         if (alumnoMatriculado.isError()) {
@@ -39,7 +46,7 @@ public class RetiroService implements IRetiro {
 
         Date fecha = new Date();
 
-        Retiro retiro = new Retiro(numMatricula, DateHelper.getFormattedDate(fecha), DateHelper.getFormattedTime(fecha));
+        Retiro retiro = new Retiro(ConstantsHelper.RetiroCodigo.Generar(ultimoCodigoRegistrado.getValue()), numMatricula, DateHelper.getFormattedDate(fecha), DateHelper.getFormattedTime(fecha));
 
         return _retiroRepository.saveRetiro(retiro);
     }
@@ -57,7 +64,7 @@ public class RetiroService implements IRetiro {
             return Result.error(alumno.getError());
         }
 
-        if (alumno.getValue().getEstado() != 2) {
+        if (alumno.getValue().getEstado() != ConstantsHelper.AlumnoConstants.getEstadoRetirado()) {
             return Result.error("No se puede cancelar el retiro de un alumno si su estado no es 'retirado");
         }
 

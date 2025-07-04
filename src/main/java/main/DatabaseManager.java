@@ -33,6 +33,7 @@ public class DatabaseManager {
         try {
             if (connection == null || connection.isClosed()) {
                 connection = DriverManager.getConnection(DB_URL);
+                System.out.println("Conexión a base de datos abierta.");
             }
             return connection;
         } catch (SQLException e) {

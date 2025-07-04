@@ -39,21 +39,24 @@ public class MatriculaRepository implements IMatriculaRepository {
             return Result.success(matriculas);
         } catch (SQLException e) {
             return Result.error("Error obteniendo todas los matrículas", e);
+        } finally {
+            _databaseManager.closeConnection();
         }
     }
 
     public Result<Matricula> saveMatricula(Matricula matricula) {
         String sql = """
-                INSERT INTO matricula (cod_alumno, cod_curso, fecha, hora)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO matricula (num_matricula, cod_alumno, cod_curso, fecha, hora)
+                VALUES (?, ?, ?, ?, ?)
                 """;
 
         try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql,
                 Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setInt(1, matricula.getCodAlumno());
-            stmt.setInt(2, matricula.getCodCurso());
-            stmt.setString(3, matricula.getFecha());
-            stmt.setString(4, matricula.getHora());
+            stmt.setInt(1, matricula.getNumMatricula());
+            stmt.setInt(2, matricula.getCodAlumno());
+            stmt.setInt(3, matricula.getCodCurso());
+            stmt.setString(4, matricula.getFecha());
+            stmt.setString(5, matricula.getHora());
 
             int affectedRows = stmt.executeUpdate();
 
@@ -69,6 +72,8 @@ public class MatriculaRepository implements IMatriculaRepository {
             return Result.error("No se pudo insertar la matrícula");
         } catch (SQLException e) {
             return Result.error("Excepción al insertar la matrícula", e);
+        } finally {
+            _databaseManager.closeConnection();
         }
     }
 
@@ -93,6 +98,8 @@ public class MatriculaRepository implements IMatriculaRepository {
             return Result.error("No se pudo editar la matrícula");
         } catch (SQLException e) {
             return Result.error("Excepción al editar la matrícula", e);
+        } finally {
+            _databaseManager.closeConnection();
         }
     }
 
@@ -112,6 +119,8 @@ public class MatriculaRepository implements IMatriculaRepository {
             return Result.error("No se pudo eliminar la matrícula");
         } catch (SQLException e) {
             return Result.error("Excepción al eliminar la matrícula", e);
+        } finally {
+            _databaseManager.closeConnection();
         }
     }
 
@@ -130,6 +139,8 @@ public class MatriculaRepository implements IMatriculaRepository {
             }
         } catch (SQLException e) {
             return Result.error("Error verificando existencia de alumno: " + codAlumno + " en matrícula", e);
+        } finally {
+            _databaseManager.closeConnection();
         }
     }
 
@@ -154,6 +165,8 @@ public class MatriculaRepository implements IMatriculaRepository {
             }
         } catch (SQLException e) {
             return Result.error("Error obteniendo la matrícula con código " + numMatricula, e);
+        } finally {
+            _databaseManager.closeConnection();
         }
     }
 
@@ -176,6 +189,32 @@ public class MatriculaRepository implements IMatriculaRepository {
             }
         } catch (SQLException e) {
             return Result.error("Error buscando matrícula del alumno", e);
+        } finally {
+            _databaseManager.closeConnection();
+        }
+    }
+
+    public Result<Integer> getUltimoNumMatriculaIngresado() {
+        String sql = """
+				SELECT
+					MAX(num_matricula) as ultimo_codigo
+				FROM
+					matricula
+				WHERE
+					strftime('%Y', created_at) = strftime('%Y', 'now');
+				""";
+
+        try (PreparedStatement stmt = _databaseManager.getConnection().prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()){
+            if (rs.next()) {
+                int ultimo_codigo = rs.getInt(1);
+                return Result.success(ultimo_codigo);
+            }
+            return Result.success(0);
+        } catch (SQLException e) {
+            return Result.error("Error obteniendo el último número de matrícula ingresado", e);
+        } finally {
+            _databaseManager.closeConnection();
         }
     }
 }

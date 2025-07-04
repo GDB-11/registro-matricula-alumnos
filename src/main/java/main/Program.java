@@ -1,16 +1,8 @@
 package main;
 
-import application.core.interfaces.IMatricula;
-import application.core.interfaces.IRetiro;
-import application.core.services.MatriculaService;
-import application.core.services.RetiroService;
+import application.core.interfaces.*;
+import application.core.services.*;
 import com.formdev.flatlaf.FlatDarkLaf;
-import application.core.interfaces.IAlumno;
-import application.core.interfaces.IConsulta;
-import application.core.interfaces.ICurso;
-import application.core.services.AlumnoService;
-import application.core.services.ConsultaService;
-import application.core.services.CursoService;
 import infrastructure.core.interfaces.IAlumnoRepository;
 import infrastructure.core.interfaces.ICursoRepository;
 import infrastructure.core.interfaces.IMatriculaRepository;
@@ -64,22 +56,20 @@ public class Program {
             
             // Registrar instancias de base de datos
             container.addInstance(DatabaseManager.class, databaseManager);
-            //container.addInstance(DatabaseInitializer.class, databaseInitializer);
 
             // Registrar repositorios
             container.addSingleton(IAlumnoRepository.class, AlumnoRepository.class);
             container.addSingleton(ICursoRepository.class, CursoRepository.class);
             container.addSingleton(IMatriculaRepository.class, MatriculaRepository.class);
             container.addSingleton(IRetiroRepository.class, RetiroRepository.class);
-            container.addSingleton(IConsulta.class, ConsultaService.class);
-
 
             // Registrar servicios
             container.addSingleton(IAlumno.class, AlumnoService.class);
             container.addSingleton(ICurso.class, CursoService.class);
             container.addSingleton(IMatricula.class, MatriculaService.class);
             container.addSingleton(IRetiro.class, RetiroService.class);
-            container.addSingleton(application.core.interfaces.IConsulta.class, application.core.services.ConsultaService.class);
+            container.addSingleton(IConsulta.class, ConsultaService.class);
+            container.addSingleton(IWindow.class, WindowService.class);
 
             // Debug: Imprimir servicios registrados
             container.printRegisteredServices();
@@ -97,15 +87,14 @@ public class Program {
         javax.swing.SwingUtilities.invokeLater(() -> {
             try {
                 System.out.println("Configurando la interfaz de usuario...");
+                IWindow windowService = container.getService(IWindow.class);
                 
                 // Tema visual
                 FlatDarkLaf.setup();
 
-                ImageIcon icon = new ImageIcon("red-dev-simplified-logo.png");
-
                 MainWindow mainWindow = windowFactory.createMainWindow();
                 mainWindow.setVisible(true);
-                mainWindow.setIconImage(icon.getImage());
+                mainWindow.setIconImage(windowService.getWindowIcon());
                 
                 System.out.println("La aplicación se inició correctamente");
             } catch (Exception e) {
