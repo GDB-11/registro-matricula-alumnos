@@ -184,7 +184,7 @@ public class AyudaWindow extends JFrame {
         copyrightPanel.setBackground(Color.WHITE);
         copyrightPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 
-        JLabel copyrightLabel = new JLabel("© 2024 Red Dev: Todos los derechos reservados");
+        JLabel copyrightLabel = new JLabel("© 2025 Red Dev: Todos los derechos reservados");
         copyrightLabel.setFont(new Font("Arial", Font.BOLD, 12));
         copyrightLabel.setForeground(new Color(220, 20, 60));
         copyrightLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
