@@ -5,6 +5,7 @@ import javax.swing.border.EmptyBorder;
 
 import application.core.interfaces.IWindow;
 import main.WindowFactory;
+import presentation.ayuda.AyudaWindow;
 import presentation.consultas.MatriculasRetirosWindow;
 import presentation.helper.WindowHelper;
 import presentation.mantenimiento.AlumnoWindow;
@@ -76,6 +77,13 @@ public class MainWindow extends JFrame {
         JMenuItem mntm_reportes = new JMenuItem("Reportes");
         mn_reporte.add(mntm_reportes);
 
+        // Reporte menu
+        JMenu mn_ayuda = new JMenu("Ayuda");
+        menuBar_mainWindow.add(mn_ayuda);
+
+        JMenuItem mntm_acercaDe = new JMenuItem("Acerda de");
+        mn_ayuda.add(mntm_acercaDe);
+
         // Content panel
         JPanel contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -108,6 +116,7 @@ public class MainWindow extends JFrame {
         mntm_matriculasRetiros.addActionListener(e -> openMatriculasRetirosWindow());
         mntm_alumnosCursos.addActionListener(e -> openAlumnosCursosWindow());
         mntm_reportes.addActionListener(e -> openReportesWindow());
+        mntm_acercaDe.addActionListener(e -> openAyudaWindow());
     }
 
     private void openAlumnoWindow() {
@@ -202,6 +211,18 @@ public class MainWindow extends JFrame {
             System.out.println("ReportesWindow Abierto");
         } catch (Exception e) {
             handleWindowError("ReportesWindow", e);
+        }
+    }
+
+    private void openAyudaWindow() {
+        try {
+            AyudaWindow window = windowFactory.createAyudaWindow();
+            window.setVisible(true);
+            window.setIconImage(windowService.getWindowIcon());
+
+            System.out.println("AyudaWindow Abierto");
+        } catch (Exception e) {
+            handleWindowError("AyudaWindow", e);
         }
     }
 }

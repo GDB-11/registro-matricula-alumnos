@@ -2,6 +2,7 @@ package main;
 
 import application.core.interfaces.*;
 import presentation.MainWindow;
+import presentation.ayuda.AyudaWindow;
 import presentation.consultas.AlumnosCursosWindow;
 import presentation.consultas.MatriculasRetirosWindow;
 import presentation.mantenimiento.AlumnoWindow;
@@ -89,5 +90,9 @@ public class WindowFactory {
         ICurso cursoService = serviceContainer.getService(ICurso.class);
 
         return new ReportesWindow(matriculaService, alumnoService, cursoService);
+    }
+
+    public AyudaWindow createAyudaWindow() {
+        return new AyudaWindow();
     }
 }

@@ -100,6 +100,10 @@ public class MatriculaService implements IMatricula {
                     return Result.error(alumno.getError());
                 }
 
+                if (alumno.getValue().getEstado() == ConstantsHelper.AlumnoConstants.getEstadoRetirado()) {
+                    continue;
+                }
+
                 alumnosEnCurso.add(alumno.getValue());
             }
         }
