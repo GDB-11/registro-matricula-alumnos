@@ -1,6 +1,5 @@
 package presentation.registro.retiro;
 
-import application.core.interfaces.IAlumno;
 import application.core.interfaces.ICurso;
 import application.core.interfaces.IMatricula;
 import application.core.interfaces.IRetiro;
@@ -49,7 +48,7 @@ public class RetiroWindow extends JFrame {
         setBounds(100, 100, 1600, 750);
         WindowHelper.centerWindow(this);
 
-        // Initializar tabla y su modelo
+        // Inicializar tabla y su modelo
         tableModel = new RetiroWindow.RetiroTableModel();
         retirosTable = new JTable(tableModel);
         setupTable();

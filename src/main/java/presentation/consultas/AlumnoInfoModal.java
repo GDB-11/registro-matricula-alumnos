@@ -22,7 +22,7 @@ public class AlumnoInfoModal extends JDialog {
     initializeComponents();
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setResizable(false);
-    setPreferredSize(new Dimension(500, 600));
+    setPreferredSize(new Dimension(500, curso == null ? 600 : 800));
     pack();
     setLocationRelativeTo(parent);
 

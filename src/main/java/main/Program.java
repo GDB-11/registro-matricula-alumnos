@@ -13,8 +13,6 @@ import infrastructure.core.services.MatriculaRepository;
 import infrastructure.core.services.RetiroRepository;
 import presentation.MainWindow;
 
-import javax.swing.*;
-
 /**
  * Orquestador de toda la aplicación
  */
@@ -102,19 +100,5 @@ public class Program {
                 e.printStackTrace();
             }
         });
-    }
-
-    /**
-     * Obtener el contenedor de servicio
-     */
-    public static ServiceContainer getContainer() {
-        return container;
-    }
-
-    /**
-     * Obtener window factory
-     */
-    public static WindowFactory getWindowFactory() {
-        return windowFactory;
     }
 }

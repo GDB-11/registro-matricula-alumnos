@@ -21,13 +21,6 @@ public class WindowFactory {
     }
 
     /**
-     * Obtener objeto ServiceContainer
-     */
-    public ServiceContainer getServiceContainer() {
-        return serviceContainer;
-    }
-
-    /**
      * Crea la ventana principal
      */
     public MainWindow createMainWindow() {

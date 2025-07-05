@@ -4,7 +4,6 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import application.core.interfaces.IWindow;
-import infrastructure.core.interfaces.IAlumnoRepository;
 import main.WindowFactory;
 import presentation.consultas.MatriculasRetirosWindow;
 import presentation.helper.WindowHelper;
@@ -91,13 +90,13 @@ public class MainWindow extends JFrame {
             backgroundLabel.setLayout(null);
             setContentPane(backgroundLabel);
 
-            System.out.println("Background image loaded successfully");
+            System.out.println("Imagen de fondo cargada");
         } catch (Exception e) {
-            System.err.println("Error loading background image: " + e.getMessage());
+            System.err.println("Error cargando imagen de fondo: " + e.getMessage());
             JPanel contentPaneExc = new JPanel();
             contentPaneExc.setBorder(new EmptyBorder(5, 5, 5, 5));
             contentPaneExc.setLayout(null);
-            contentPaneExc.setBackground(new Color(240, 240, 240));
+            contentPaneExc.setBackground(new Color(27, 8, 53));
             setContentPane(contentPaneExc);
         }
       
