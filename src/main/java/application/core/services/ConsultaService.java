@@ -122,12 +122,12 @@ public class ConsultaService implements IConsulta {
     Matricula matricula = resultMatricula.getValue();
 
     Result<Alumno> resultAlumno = alumnoRepository.getAlumnoByCodigo(matricula.getCodAlumno());
-    if(!resultAlumno.isSuccess()) {
+    if (!resultAlumno.isSuccess()) {
       return Result.error("Alumno no encontrado con el código: " + matricula.getCodAlumno());
     }
 
     Result<Curso> resultCurso = cursoRepository.getCursoFromMatricula(matricula.getNumMatricula());
-    if(!resultCurso.isSuccess()) {
+    if (!resultCurso.isSuccess()) {
       return Result.error("Curso no encontrado asociado a la matrícula: " + matricula.getNumMatricula());
     }
 
@@ -135,10 +135,10 @@ public class ConsultaService implements IConsulta {
     Curso curso = resultCurso.getValue();
 
     String datos = "Información del Retiro\n"
-                 + "----------------------------------\n"
-                 + "Alumno: " + alumno.getNombres() + " " + alumno.getApellidos() + "\n"
-                 + "Curso: " + curso.getAsignatura() + " (Código: " + curso.getCodCurso() + ")\n"
-                 + "Fecha de retiro: " + retiro.getFecha() + " - " + retiro.getHora();
+        + "----------------------------------\n"
+        + "Alumno: " + alumno.getNombres() + " " + alumno.getApellidos() + "\n"
+        + "Curso: " + curso.getAsignatura() + " (Código: " + curso.getCodCurso() + ")\n"
+        + "Fecha de retiro: " + retiro.getFecha() + " - " + retiro.getHora();
 
     return Result.success(datos);
 
@@ -147,5 +147,15 @@ public class ConsultaService implements IConsulta {
   @Override
   public Result<Curso> consultarCursoPorCodigo(int codCurso) {
     return cursoRepository.getCursoByCodigo(codCurso);
+  }
+
+  @Override
+  public Result<Matricula> getMatriculaByCodigo(int numMatricula) {
+    return matriculaRepository.getMatriculaByCodigo(numMatricula);
+  }
+
+  @Override
+  public Result<Retiro> getRetiroByCodigo(int numRetiro) {
+    return retiroRepository.getRetiroByCodigo(numRetiro);
   }
 }
